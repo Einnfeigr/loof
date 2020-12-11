@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.einnfeigr.taskApp.controller.rest.IdController;
+import com.einnfeigr.taskApp.controller.rest.CodeController;
 
 public class IdTests {
 
@@ -19,7 +19,7 @@ public class IdTests {
 		Random random = new Random();
 		List<String> ids = new ArrayList<>();
 		for(int x = 0; x < 150; x++) {
-			ids.add(IdController.generateId(random));
+			ids.add(CodeController.generateCode(random));
 		}
 		for(String id : ids) {
 			log.info(id);

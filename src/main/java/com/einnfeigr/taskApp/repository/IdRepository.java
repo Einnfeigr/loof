@@ -2,10 +2,10 @@ package com.einnfeigr.taskApp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.einnfeigr.taskApp.pojo.Id;
+import com.einnfeigr.taskApp.pojo.Code;
 
-public interface IdRepository extends JpaRepository<Id, Long> {
+public interface IdRepository extends JpaRepository<Code, Long> {
 
-	Id findById(String id);
+	Code findById(String id);
 	
 }

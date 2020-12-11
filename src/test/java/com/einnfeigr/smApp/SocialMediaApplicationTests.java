@@ -1,5 +1,8 @@
 package com.einnfeigr.smApp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -13,12 +16,18 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.einnfeigr.taskApp.SocialMediaApplication;
 import com.einnfeigr.taskApp.config.WebSecurityConfig;
+import com.einnfeigr.taskApp.exception.controller.UserNotFoundException;
+import com.einnfeigr.taskApp.misc.Util;
+import com.einnfeigr.taskApp.pojo.Code;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @AutoConfigureMockMvc
 @Import(WebSecurityConfig.class)
@@ -35,6 +44,9 @@ public class SocialMediaApplicationTests {
 	
 	@Autowired
 	private MockMvc mvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	@Test
 	public void unauthorizedCheck() throws Exception {
@@ -56,9 +68,22 @@ public class SocialMediaApplicationTests {
 			.andExpect(MockMvcResultMatchers.status().is3xxRedirection())
 			.andDo(MockMvcResultHandlers.log());
 			logger.info("Logged in succesfully");
+			MvcResult result = mvc.perform(MockMvcRequestBuilders
+					.post("/api/codes/generate/")
+					.param("count", "1")
+					.accept("application/json")
+					.accept(MediaType.ALL))
+			.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();		
+			String content = result.getResponse().getContentAsString();		
+			List<Code> codes = new ArrayList<>();
+			TypeReference<List<Code>> mapType = new TypeReference<List<Code>>() {};
+			codes = objectMapper.readValue(content, mapType);
+			for(Code code : codes) {
+				logger.info(code+"");
+			}
 			mvc.perform(MockMvcRequestBuilders
 					.post("/users/add/")
-					.param("id", "123")
+					.param("id", codes.get(0).getId())
 					.param("name", "Вася")
 					.param("password", "123")
 					.param("login", "vasya123")
@@ -79,11 +104,14 @@ public class SocialMediaApplicationTests {
 			.andDo(MockMvcResultHandlers.log());
 			logger.info("Logged in with new account succesfully");		
 		} finally {
+			try {
 			mvc.perform(MockMvcRequestBuilders
 					.post("/users/delete")
 					.param("login", "vasya123"))
-			.andExpect(MockMvcResultMatchers.status().is3xxRedirection())
 			.andDo(MockMvcResultHandlers.log());
+			} catch(UserNotFoundException e) {
+				logger.error(Util.EXCEPTION_LOG_MESSAGE, e);
+			}
 		}
 	}
 	

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.einnfeigr.taskApp.exception.controller.AccessException;
 import com.einnfeigr.taskApp.exception.controller.AuthUserNotFoundException;
 import com.einnfeigr.taskApp.exception.controller.ControllerException;
-import com.einnfeigr.taskApp.exception.controller.NotFoundException;
 import com.einnfeigr.taskApp.exception.controller.UserNotFoundException;
 import com.einnfeigr.taskApp.misc.Util;
 import com.einnfeigr.taskApp.pojo.User;
@@ -33,6 +32,9 @@ public class UserController {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private CodeController codeController;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -79,15 +81,19 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/add")
-	public Long addUser(@RequestParam Long id, 
+	public Long addUser(@RequestParam String id, 
 			@RequestParam String login,
 			@RequestParam String password,
 			@RequestParam String name) 
 					throws AuthUserNotFoundException, AccessException {
+		if(!codeController.isCorrect(id)) {
+			throw new AccessException("Идентификатор не найден");
+		}
 		User user = new User();
 		user.setName(name);
 		user.setLogin(login);
 		user.setPassword(passwordEncoder.encode(password));
+		codeController.delete(id);
 		return userRepository.save(user).getId();
 	}
 		
@@ -127,7 +133,6 @@ public class UserController {
 	public User getUser(String login) throws UserNotFoundException, AccessException {
 		User user = userRepository.findByLogin(login);
 		if(user == null) {
-			log.info("login is:"+login);
 			throw new UserNotFoundException();
 		}
 		return user;
