@@ -1,0 +1,13 @@
+.footer {
+	background-color: rgb(45,45,45);
+	width: 100vw;
+	height: 80px;
+	padding: 12px;
+	box-sizing: border-box;
+	position: relative;
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: flex-end;
+	botton: 0;
+	left: 0;
+}

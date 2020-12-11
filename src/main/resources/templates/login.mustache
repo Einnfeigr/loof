@@ -1,0 +1,30 @@
+<div class="login">
+	<h1>
+		Авторизация
+	</h1>
+	<p>
+		Чтобы продолжить, вам необходимо авторизоваться на сайте
+	</p>
+	{{#isError}}
+		<p>
+			{{error}}
+		</P>
+	{{/isError}}
+	<br>
+	<form method="POST" action="login" class="loginForm">
+		<table>
+	       	<tr>
+	           	<td><input type="text" name="username" placeholder="Логин" /></td>
+	         </tr>
+	         <tr>
+	            <td><input type="password" name="password" placeholder="Пароль" /></td>
+	         </tr>
+	         <tr>
+	         	<td><br></td>
+	         </tr>
+	         <tr>
+	            <td><input name="submit" type="submit" value="Войти" /></td>
+	  		</tr>
+	   	</table>
+	</form>
+</div>

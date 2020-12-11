@@ -1,0 +1,17 @@
+.body {
+	padding-top: 90px;
+}
+
+.header {
+	background-color: rgba(100,100,100);
+	width: 100vw;
+	height: 90px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 5;
+}
+
+.page {
+	gap: 20px;
+}

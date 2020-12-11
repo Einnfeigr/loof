@@ -1,0 +1,314 @@
+.preload * {
+	-webkit-transition: none;
+	-moz-transition: none;
+	-ms-transition: none;
+	-o-transition: none;
+}
+
+body {	
+	font-family: 'Fira Sans', sans-serif;
+	overflow-x: hidden;
+	margin: 0;
+	background: rgb(254, 249, 248);
+}
+
+input, select {
+	padding: 2px 5px 2px 5px;
+	min-width: 10em;
+	box-sizing: border-box;
+	border: 1px solid hsl(0,0%,30%);
+}
+
+input {
+	border-radius: 3.5px;
+}
+
+input[type=checkbox] {
+	min-width: auto;
+}
+
+input[type=select] {
+	max-width: 10em;
+}
+
+tr td:first-child {
+	text-align: right;
+	padding-right: 5px;
+}
+
+tr td:first-child:last-child {
+	text-align: left;
+	padding-right: 0;
+}
+
+table tr:last-child td {
+	padding-top: 1em;
+}
+
+.body {
+	min-height: 100vh;
+}
+
+.page {
+	position: relative;
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: column;
+	padding-bottom: 35px;
+}
+
+.page h1 {
+	text-align: center;
+}
+
+h1, h2, h3, h4 {
+	font-weight: normal;
+}
+
+a {
+	text-decoration: none;
+	color: black;
+	cursor: pointer;
+	line-height: 150%;
+	border: 1px dashed black;
+	border-width: 0 0 1px 0;
+}
+
+.centered {
+	text-align: center;
+}
+
+.login {
+	display: flex;
+	flex-flow: column;
+	justify-content: center;
+	height: calc(100vh - 30px - 3em - 35px);
+	align-items: center;
+}
+
+.loginForm td {
+	display: flex;
+	justify-content: center;
+}
+
+.tasks {
+	display: flex;
+	flex-flow: row;
+	flex-wrap: wrap;
+	padding: 15px;
+	gap: 20px;
+}
+
+.tasks .task {
+	width: 30%;
+	min-width: 250px;
+	flex-shrink: 1;
+	display: flex;
+	flex-flow: column;
+	box-sizing: border-box;
+	padding: 10px;
+	background: rgba(200,200,200,0.3);
+	box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
+}
+
+.tasks .task .text p {
+	height: 250px;
+	overflow-y: scroll;
+	text-overflow: ellipsis;
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+textarea {
+	resize: vertical;
+	min-height: 3em;
+}
+
+.addForm .description {
+	vertical-align: top;
+}
+
+.pageNav {
+	padding: 5px;
+}
+
+.extra {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	float: right;
+}
+
+.content {
+	padding: 5px;
+}
+
+.content > .task {
+	display: flex;
+	flex-flow: column;
+}
+
+.content > .task p {
+	margin-left: 5vw;
+	margin-right: 5vw;
+}
+
+.statusWrapper {
+	color: rgba(0,0,0,0.65);
+	font-weight: normal;
+	padding: 5px;
+	height: 2em;
+}
+
+.previewBackground {
+	background: rgba(0,0,0,0.95);
+	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 12;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	top: 0;
+}
+
+.edEnabled, .edDisabled, .edHiddenElement {
+	-webkit-transition: all ease-in 0.15s;
+    -moz-transition: all ease-in 0.15s;
+    -o-transition: all ease-in 0.15s;
+    transition: all ease-in 0.15s;
+}
+
+.disabled {
+	opacity: 0.5;
+	position: relative;
+}
+
+.disabled:after {
+	content: "";
+	position: absolute;
+	left: -1px;
+	top: -1px;
+	width: calc(100% + 2px);
+	height: calc(100% + 2px);
+}
+
+.contentWrapper {
+	display: flex;
+	align-items: left;
+	flex-flow: row;
+	gap: 25px;
+}
+
+.scheduleWrapper {
+	display: flex;
+	padding: 0;
+	width: auto;
+	align-items: center;
+	flex-flow: column;
+}
+
+.schedule {
+	width: 100%;
+	font-size: 1rem;
+	overflow-x: auto;
+	max-width: calc(100% - 30px);	
+	border-collapse: collapse;
+}
+
+.schedule input, .schedule select {
+	min-width: auto;
+}
+
+.schedule td, .schedule th {
+	border: 1px solid rgba(150,150,150);
+	overflow-x: hidden;
+	box-sizing: border-box;
+	text-overflow: ellipsis;
+	width: 3rem;
+}
+
+.schedule th {
+	background: rgb(200,130,130);
+}
+
+.schedule .today {
+	color: red;
+	background-color: yellow;
+}
+
+.schedule .bottom {
+	flex: 0 0 calc(6rem + 3rem * 7);
+	max-width: calc(6rem + 3rem * 7);
+}
+
+.schedule .userName {
+	flex: 0 0 6rem;
+	padding: 0.2em;
+	max-width: 6rem;
+}
+
+.schedule tr.days {
+	text-align: center;
+}
+
+.schedule td {
+	text-align: center;
+	background: white;
+	min-height: 2em;
+	padding: 0.2em;
+}
+
+.schedule tr:last-child td {
+	padding-top: 0;
+}
+
+.shortcut {
+	max-width: 5em;
+}
+
+.schedule td .text {
+	margin: 0;
+	border: 0;
+	width: 100%;
+	background: none;
+	box-sizing: border-box;
+}
+
+.permissions {
+	padding-left: 2em;
+}
+
+.permissions li::marker {
+	content: "";
+}
+
+.permissions h3 font {
+	cursor: pointer;
+	position: relative;
+}
+
+.permissions h3 font::after {
+	content: "";
+	border: 5px solid transparent;
+	border-left: 5px solid black;
+	position: absolute;
+	margin-left: 0.5em;
+	transform: rotate(45deg);
+	bottom: 0;
+}
+
+.permissions h3.checked font::after {
+	border-left: 5px solid transparent;
+	border-top: 5px solid black;
+	transform: none;
+}
+
+.edHiddenElement {
+	overflow-y: hidden;
+}
+
+.edHiddenElement.edHidden {
+	max-height: 0;
+}

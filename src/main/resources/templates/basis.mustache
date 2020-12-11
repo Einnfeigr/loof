@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		{{>misc/elements/head}}
+	</head>
+	<body class="preload">
+		{{>misc/elements/preloader}}
+		{{^excludeHeader}}
+			{{>misc/elements/header}}
+		{{/excludeHeader}}
+		<div class="body">
+			<div class="page">
+				<div class="pageNav">
+					{{#pageTitle}}
+						<h1>{{pageTitle}}</h1>
+					{{/pageTitle}}
+				</div>
+				<div class="content">
+					{{{page}}}
+				</div>
+			</div>
+		</div>
+		{{^excludeFooter}}
+			{{>misc/elements/footer}}
+		{{/excludeFooter}}
+	</body>
+</html>
