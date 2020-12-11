@@ -1,0 +1,96 @@
+<h2 class="centered">
+	<a href="/schedule?month={{previousMonth}}
+			{{#previousYear}}&year={{previousYear}}{{/previousYear}}">
+		{{previousMonthLocalized}}
+	</a>
+	{{monthLocalized}}
+	<a href="/schedule?month={{nextMonth}}
+			{{#nextYear}}&year={{nextYear}}{{/nextYear}}">
+		{{nextMonthLocalized}}
+	</a>
+</h2>
+{{^isCurrentMonth}}
+	<h3 class="centered">
+		<a href="/schedule">Текущий месяц</a>
+	</h3>
+{{/isCurrentMonth}}
+<form id="update" class="dynamic reload" action="/api/schedule/update" method="POST">
+</form>
+<input type="hidden" name="month" form="update" value="{{month}}" />
+<input type="hidden" name="year" form="update" value="{{year}}" />
+<div class="contentWrapper">
+	<div class="scheduleWrapper">
+		{{#weeks}}
+			<table class="schedule">
+				<tr class="days">
+					<th class="userName"></th>
+					{{#days}}
+						<th {{#isToday}}class="today"{{/isToday}}>{{num}}</th>
+					{{/days}}
+				</tr>
+				{{#users}}
+					<tr>
+						<td class="userName">
+							{{#user}}
+								{{>../user/link}}
+							{{/user}}
+						</td>
+						{{#days}}
+							<td {{^num}}class="null"{{/num}}>
+								{{#num}}
+									{{#authUser.Permissions.EditSchedule}}
+										{{^afterToday}}
+											<input form="update" class="text" type="text" placeholder="-"
+											 name="{{user.login}}[{{num}}]"
+											 value="{{^workingHours.hours}}{{workingHours.shortcut}}{{/workingHours.hours}}{{workingHours.hours}}" />
+										{{/afterToday}}
+										{{#afterToday}}
+											<select form="update" class="text" name="{{user.login}}[{{num}}]">
+												{{#brigade}}
+													<option>{{brigade.shortcut}}</option>
+												{{/brigade}}
+												<option value="null">-</option>
+												{{#brigades}}
+													<option value="{{shortcut}}">
+															{{shortcut}}
+													</option>
+												{{/brigades}}
+											</select>
+										{{/afterToday}}
+									{{/authUser.Permissions.EditSchedule}}
+									{{^authUser.Permissions.EditSchedule}}
+										{{^brigade}}
+											{{workingHours.hours}}
+											{{^workingHours.hours}}
+												-
+											{{/workingHours.hours}}
+										{{/brigade}}
+										{{brigade.shortcut}}
+									{{/authUser.Permissions.EditSchedule}}
+								{{/num}}
+							</td>
+						{{/days}}
+					</tr>
+				{{/users}}
+				{{!You can add last row with button to each table by uncommenting this block
+					<tr>
+						<td class="bottom"><input class="submit" type="submit" value="Сохранить" /></td>
+					</tr
+				}}
+			</table>
+		{{/weeks}}
+	</div>
+	<div class="brigadesWrapper">
+		<h2 class="centered">Список смен</h2>
+		<ul>
+			{{#brigades}}
+				<li>
+					{{name}}({{shortcut}})
+				</li>
+			{{/brigades}}
+		</ul>
+	</div>
+</div>
+{{#authUser.Permissions.EditSchedule}}
+	<input class="submit" form="update" type="submit" value="Сохранить" />
+{{/authUser.Permissions.EditSchedule}}

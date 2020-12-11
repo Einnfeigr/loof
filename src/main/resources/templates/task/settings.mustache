@@ -1,0 +1,57 @@
+<div class="task">
+	<form id="delete" action="/tasks/{{task.id}}/delete">
+	</form>
+	<form class="dynamic reload" action="/tasks/{{task.id}}" method="POST">
+		<table>
+			<tr>
+				<td>
+					Название:
+				</td>
+				<td>
+					<input type="text" name="name" value="{{task.name}}" />
+				</td>
+			</tr>
+			<tr>
+				<td class="description">
+					Описание:
+				</td>
+				<td>
+					<textArea name="text">{{task.text}}</textArea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Срок выполнения:
+				</td>
+				<td>
+					<input type="date" name="endDate" value="{{task.endDate}}" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Выдана:
+				</td>
+				<td>
+					{{task.startDate}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+					<input type="checkbox" name="completed" {{#task.completed}}"checked=checked"{{/task.completed}}/>
+					<input type="hidden" name="completed" value="false" />
+					Задача выполнена
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit" value="Сохранить изменения" />
+				</td>
+				<td>
+					<input type="submit" form="delete" value="Удалить задачу" />
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>

@@ -1,0 +1,42 @@
+<form class="dynamic reload" successMessage="Задача успешно добавлена" 
+		errorMessage="Ошибка при добавлении задачи" class="addForm" 
+		method="POST" action="/tasks/add">
+	<table>
+       	<tr>
+           	<td>Название:</td>
+           	<td><input type="text" name="name" /></td>
+        </tr>
+		<tr>
+			<td class="description">Описание:</td>
+			<td><textarea name="text"></textarea></td>
+		</tr>
+		<tr>
+			<td>
+				Адресаты:
+			</td>
+			<td></td>
+		</tr>
+		{{#users}}
+			<tr>
+				<td></td>
+				<td>
+					<input id="{{login}}checkbox" type="checkbox" name="logins" value="{{login}}" />
+					<label for="{{login}}checkbox">
+						{{>../user/link}}
+					</label>
+				</td>
+			</tr>
+		{{/users}}
+		<tr>
+			<td>Срок выполнения:</td>
+			<td>
+				<input name="endDate" type="date"
+			</td>
+		</tr>
+        <tr>
+			<td>
+            	<input name="submit" type="submit" value="Подтвердить" />
+            </td>
+  		</tr>
+   	</table>
+</form>

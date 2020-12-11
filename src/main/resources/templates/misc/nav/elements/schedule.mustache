@@ -1,0 +1,17 @@
+<a {{#page.schedule}}class="active"{{/page.schedule}}
+		href="/schedule">
+	График работы	
+	{{#notifications.schedule}}
+		<div class="notification">
+			<small>{{notifications.schedule}}</small>
+		</div>
+	{{/notifications.schedule}}
+</a>
+{{#page.schedule.children}}
+	{{#authUser.Permissions.EditBrigades}}
+		<a class="child {{#page.brigades}}active{{/page.brigades}}"
+				href="/brigades">
+			Смены	
+		</a>
+	{{/authUser.Permissions.EditBrigades}}
+{{/page.schedule.children}}

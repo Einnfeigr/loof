@@ -1,0 +1,17 @@
+<a {{#page.user.tasks.given}}class="active"{{/page.user.tasks.given}}
+		href="/user/{{authUser.login}}/tasks/given">
+	<div>Мои задачи</div>
+	{{#notifications.user.tasks.given}}
+		<div class="notification"><small>{{notifications.user.tasks.given}}</small></div>
+	{{/notifications.user.tasks.given}}
+</a>
+{{#authUser.Permissions.AddTasks}}
+	<a {{#page.tasks.add}}class="active"{{/page.tasks.add}}
+			href="/tasks/add">
+		Добавить задачу	
+	</a>
+	<a {{#page.user.tasks.added}}class="active"{{/page.user.tasks.added}}
+			href="/user/{{authUser.login}}/tasks/added">
+		Добавленные задачи
+	</a>
+{{/authUser.Permissions.AddTasks}}

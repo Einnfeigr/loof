@@ -1,0 +1,119 @@
+{{#authUser.Permissions.AssignSubordinates}}
+	<h2>Подчиненные</h2>
+	<h3>Добавить подчиненных</h3>
+	{{#users.exists}}
+		<form id="addsubs" class="dynamic reload" method="POST" action="/user/{{user.login}}/subordinates/add">
+			<table>
+				<tr>
+					<td>
+						Пользователи:
+					</td>
+				</tr>
+				{{#users}}
+					<tr>
+						<td>
+							<input type="checkbox" name="logins" value="{{login}}" />
+							{{>link}}
+						</td>
+					</tr>
+				{{/users}}
+				<tr>
+					<td>
+						<input type="submit" value="Добавить в список подчиненных" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	{{/users.exists}}
+	{{^users}}
+		<i>Нет доступных для добавления пользователей</i>
+	{{/users}}
+	<h3>Редактировать подчиненных</h3>
+	{{#subordinates.exists}}
+		<form id="removesubs" class="dynamic reload" method="POST" action="/user/{{user.login}}/subordinates/remove">
+			<table>
+				<tr>
+					<td>Список подчиненных:</td>
+				</tr>
+				{{#subordinates}}
+					<tr>
+						<td>
+							<input type="checkbox" name="logins" value="{{login}}" />
+							{{>link}}
+						</td>
+					</tr>
+				{{/subordinates}}
+				<tr>
+					<td>
+						<input type="submit" value="Убрать из списка подчиненных" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	{{/subordinates.exists}}
+	{{^subordinates}}
+		<i>У пользователя нет подчиненных</i>
+	{{/subordinates}}
+{{/authUser.Permissions.AssignSubordinates}}
+<h2>Основная информация</h2>
+<i>
+	Чтобы установить новый пароль, нужно ввести старый в соответствующей форме
+</i>
+<form method="POST" id="updateUser" class="dynamic redirect" action="/user/{{user.login}}">
+	<table>
+       	<tr>
+           	<td>Логин:</td>
+           	<td><input type="text" name="login" value="{{user.login}}"/></td>
+        </tr>
+		<tr>
+			<td>Имя:</td>
+			<td><input type="text" name="name" value="{{user.name}}" /></td>
+		</tr>
+		{{#authUser.Permissions.AssignPositions}}
+	        <tr>
+				<td>Должность:</td>
+				<td>
+					<select name="positionId">
+						{{#user.position}}
+							<option value="{{user.position.id}}">{{user.position.name}}</option>
+						{{/user.position}}
+						<option value="">Нет</option>
+						{{#positions}}
+							<option value="{{id}}">{{name}}</option>
+						{{/positions}}
+					</select>
+				</td>
+			</tr>
+		{{/authUser.Permissions.AssignPositions}}
+		{{^authUser.Permissions.AssignPositions}}
+			<tr>
+				<td>
+					Должность:
+				</td>
+				<td>
+					{{#user.position}}
+						{{user.position.name}}
+					{{/user.position}}
+					{{^user.position}}
+						-
+					{{/user.position}}
+				</td>
+			</tr>
+		{{/authUser.Permissions.AssignPositions}}
+		<tr>
+			<td>Старый пароль:</td>
+			<td><input type="password" name="oldPassword" /></td>
+		</tr>
+        <tr>
+            <td>Новый пароль:</td>
+            <td><input type="password" name="password" /></td>
+        </tr>
+		<tr>
+	        <td><input name="submit" form="updateUser" type="submit" value="Сохранить" /></td>
+  		</tr>
+   	</table>
+</form>
+<br>
+<form action="/user/{{user.login}}/delete">
+	<input type="submit" value="Удалить пользователя" />
+</form>

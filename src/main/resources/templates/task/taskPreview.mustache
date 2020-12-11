@@ -1,0 +1,19 @@
+<div class="task">
+	{{#authUser.Permissions.DeleteTasks}}
+    	<span><input type="checkbox" name="ids" value="{{id}}" /></span>
+	{{/authUser.Permissions.DeleteTasks}}
+	<span><a href="/tasks/{{id}}"><h3 class="centered">{{name}}</h3></a></span>
+	<span class="text"><p>{{text}}</p></span>
+	<span>Автор: {{#author}}{{>../user/link}}{{/author}}</span>
+	{{#user}}
+		<span>Адресат: {{>../user/link}}</span>
+	{{/user}}
+	<span>Дата выдачи: {{startDate}}</span>
+	{{#endDate}}
+		<span>Должна быть выполнена до {{endDate}}</span>
+	{{/endDate}}
+	<span>
+		{{#isCompleted}}Задача выполнена{{/isCompleted}}
+		{{^isCompleted}}Задача не выполнена{{/isCompleted}}
+	</span>
+</div>

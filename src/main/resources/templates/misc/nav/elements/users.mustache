@@ -1,0 +1,18 @@
+{{#authUser.Permissions.EditUsers}}
+	<a {{#page.users}}class="active"{{/page.users}} 
+			href="/users">
+		Пользователи
+	</a>
+{{/authUser.Permissions.EditUsers}}
+{{#authUser.Permissions.CreateUsers}}
+	<a {{#page.user.add}}class="active"{{/page.user.add}}
+			href="/user/add">
+		Добавить пользователя
+	</a>
+{{/authUser.Permissions.CreateUsers}}
+{{#authUser.Permissions.EditPositions}}
+	<a {{#page.positions}}class="active"{{/page.positions}}
+			href="/positions">
+		Управление должностями
+	</a>
+{{/authUser.Permissions.EditPositions}}

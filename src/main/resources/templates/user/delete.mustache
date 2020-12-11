@@ -1,0 +1,5 @@
+<h2>Вы действительно хотите удалить пользователя {{user.name}}?</h2>
+<i>Пользователь и все его данные будут удалены <b>навсегда</b></i>
+<form action="/users/{{user.login}}/delete" method="POST">
+	<input type="submit" value="Подтвердить" />
+</form>

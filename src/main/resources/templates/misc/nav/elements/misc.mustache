@@ -1,0 +1,13 @@
+<a {{#page.profile}}class="active"{{/page.profile}}
+		href="/user/{{authUser.login}}">
+	Личный кабинет
+</a>
+<a {{#page.settings}}class="active"{{/page.settings}}
+		href="/user/{{authUser.login}}/settings">
+	Настройки
+</a>
+<a {{#page.about}}class="active"{{/page.about}}
+		href="/about">
+	Справка
+</a>
+<a href="/logout">Выйти</a>

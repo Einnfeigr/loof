@@ -1,0 +1,122 @@
+<h2>Выбрать дату</h2>
+<table>
+	<tr>
+		<td>
+			<h3>План на день</h3>
+		</td>
+	</tr>
+	<tr>
+	<form action="/" method="GET" >
+		<td>			
+			<input type="date" name="date" value="{{date}}">
+		</td>
+		<td> </td>
+		<td>
+			<input type="submit" value="Показать план">
+		</td>
+	</form>
+	</tr>
+	<tr>
+		<td><h3>План на неделю</h3></td>
+	</tr>
+	<tr>
+		<form action="/" method="GET" >
+			<td>
+				<input type="week" name="date" value="{{date}}">
+			</td>
+			<td> </td>
+			<td>
+				<input type="submit" value="Показать план">
+			</td>
+		</form>
+	</tr>
+	<tr>
+		<td><h3>План на месяц</h3></td>
+	</tr>
+	<tr>
+		<form action="/" method="GET" >
+			<td>
+				<input type="month" name="date" value="{{date}}">
+			</td>
+			<td> </td>
+			<td>
+				<input type="submit" value="Показать план">
+			</td>
+		</form>
+	</tr>
+</table>
+{{#authUser.Permissions.AddGoals}}
+<hr>
+	<h2>Добавить цель</h2>
+	<form class="dynamic reload" action="/api/goals/add" method="POST">
+		<table>
+			<tr>
+				<td>Название</td>
+				<td></td>
+				<td>
+					<input type="text" name="name" />
+				</td>
+			</tr>
+			<tr>
+				<td>Префикс (опционально):</td>
+				<td></td>
+				<td>	
+					<input type="text" name="prefix" placeholder="что сделать?" />
+				</td>
+			<tr>
+				<td>Целевое количество:</td>
+				<td></td>
+				<td>
+					<input type="text" name="goal" placeholder="сколько?" />
+				</td>
+			<tr>
+				<td>Суффикс:</td>
+				<td></td>
+				<td>
+					<input type="text" name="suffix" placeholder="чего?"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Дата начала:</td>
+				<td></td>
+				<td>
+					<input type="date" name="startDate" value="{{date}}" />
+				</td>
+			</tr>
+			<tr>
+				<td class="enabled">Дата окончания:</td>
+				<td><input type="checkbox" name="includeEnd" id="edCheckbox" /></td>
+				<td class="enabled">
+					<input type="date" name="endDate" value="{{date}}" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit" value="Добавить" />
+				</td>
+			</tr>
+		</table>
+	</form>
+{{/authUser.Permissions.AddGoals}}
+{{#goals.exists}}
+<hr>
+	<h2>Цели по плану</h2>
+	{{#goals}}
+		<h3>{{name}}</h3>
+		<table>
+			<tr>
+				<td>
+					Цель: {{#prefix}}{{prefix}}{{/prefix}} {{goal}} {{suffix}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Прогресс: {{progress}}/{{goal}}
+				</td>
+			</tr>
+		</table>
+	{{/goals}}
+{{/goals.exists}}
+{{^goals}}
+	На этот день не установлено задач
+{{/goals}}
