@@ -122,20 +122,6 @@ input[type=submit] {
 	min-width: auto;
 }
 
-tr td:first-child {
-	text-align: right;
-	padding-right: 5px;
-}
-
-tr td:first-child:last-child {
-	text-align: left;
-	padding-right: 0;
-}
-
-table tr:last-child td {
-	padding-top: 1em;
-}
-
 .body {
 	position: relative;
 	max-height: 100vh;
@@ -185,21 +171,9 @@ a {
 	gap: 10px;
 }
 
-.tasks {
-	display: flex;
-	flex-flow: row;
-	flex-wrap: wrap;
-	padding: 15px;
-	gap: 20px;
-}
-
 textarea {
 	resize: vertical;
 	min-height: 3em;
-}
-
-.addForm .description {
-	vertical-align: top;
 }
 
 .pageNav {
@@ -207,33 +181,9 @@ textarea {
 	padding: 5px;
 }
 
-.extra {
-	position: absolute;
-	right: 5px;
-	top: 5px;
-	float: right;
-}
-
 .content {
 	z-index: 2;
 	padding: 5px;
-}
-
-.content > .task {
-	display: flex;
-	flex-flow: column;
-}
-
-.content > .task p {
-	margin-left: 5vw;
-	margin-right: 5vw;
-}
-
-.statusWrapper {
-	color: rgba(0,0,0,0.65);
-	font-weight: normal;
-	padding: 5px;
-	height: 2em;
 }
 
 .previewBackground {
@@ -279,43 +229,6 @@ textarea {
 
 .shortcut {
 	max-width: 5em;
-}
-
-.schedule td .text {
-	margin: 0;
-	border: 0;
-	width: 100%;
-	background: none;
-	box-sizing: border-box;
-}
-
-.permissions {
-	padding-left: 2em;
-}
-
-.permissions li::marker {
-	content: "";
-}
-
-.permissions h3 font {
-	cursor: pointer;
-	position: relative;
-}
-
-.permissions h3 font::after {
-	content: "";
-	border: 5px solid transparent;
-	border-left: 5px solid black;
-	position: absolute;
-	margin-left: 0.5em;
-	transform: rotate(45deg);
-	bottom: 0;
-}
-
-.permissions h3.checked font::after {
-	border-left: 5px solid transparent;
-	border-top: 5px solid black;
-	transform: none;
 }
 
 .edHiddenElement {
