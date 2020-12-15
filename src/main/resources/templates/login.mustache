@@ -1,30 +1,17 @@
-<div class="login">
-	<h1>
-		Авторизация
-	</h1>
-	<p>
-		Чтобы продолжить, вам необходимо авторизоваться на сайте
+<h1>
+	Авторизация
+</h1>
+{{#isError}}
+	<p class="error">
+		{{error}}
 	</p>
-	{{#isError}}
-		<p>
-			{{error}}
-		</P>
-	{{/isError}}
+{{/isError}}
+<br>
+<form method="POST" action="login" class="loginForm">
+	<span>Логин</span>
+	<input type="text" name="username" />
+	<span>Пароль</span>
+	<input type="password" name="password" />
 	<br>
-	<form method="POST" action="login" class="loginForm">
-		<table>
-	       	<tr>
-	           	<td><input type="text" name="username" placeholder="Логин" /></td>
-	         </tr>
-	         <tr>
-	            <td><input type="password" name="password" placeholder="Пароль" /></td>
-	         </tr>
-	         <tr>
-	         	<td><br></td>
-	         </tr>
-	         <tr>
-	            <td><input name="submit" type="submit" value="Войти" /></td>
-	  		</tr>
-	   	</table>
-	</form>
-</div>
+	<input name="submit" type="submit" value="Войти" />
+</form>

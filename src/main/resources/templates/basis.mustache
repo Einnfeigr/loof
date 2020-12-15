@@ -4,12 +4,12 @@
 		{{>misc/elements/head}}
 	</head>
 	<body class="preload">
-		{{>misc/elements/preloader}}
-		{{^excludeHeader}}
-			{{>misc/elements/header}}
-		{{/excludeHeader}}
 		<div class="body">
-			<div class="page">
+			{{>misc/elements/preloader}}
+			{{^excludeHeader}}
+				{{>misc/elements/header}}
+			{{/excludeHeader}}
+			<div class="page {{#pageName}}{{pageName}}{{/pageName}}">
 				<div class="pageNav">
 					{{#pageTitle}}
 						<h1>{{pageTitle}}</h1>
@@ -18,10 +18,10 @@
 				<div class="content">
 					{{{page}}}
 				</div>
+				{{^excludeFooter}}
+					{{>misc/elements/footer}}
+				{{/excludeFooter}}
 			</div>
 		</div>
-		{{^excludeFooter}}
-			{{>misc/elements/footer}}
-		{{/excludeFooter}}
 	</body>
 </html>

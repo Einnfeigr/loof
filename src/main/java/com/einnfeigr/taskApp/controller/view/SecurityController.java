@@ -39,10 +39,8 @@ public class SecurityController {
 						.path("templates/login")
 						.data(data)
 						.and()
-					.data("excludeNav", true, 
-							"excludeHeader", true, 
-							"excludeBack", true,
-							"excludeFooter", true)
+					.data("excludeNav", true, "excludeHeader", true, "excludeBack", true, 
+							"pageName", "login")
 					.build();
 		} catch(Exception e) {
 			logger.error(Util.EXCEPTION_LOG_MESSAGE, e);

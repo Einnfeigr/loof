@@ -56,8 +56,11 @@ public class UserController {
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String login,
 			@RequestParam(required=false) String password,
-			@RequestParam(required=false) String oldPassword
-			) throws IOException, CloneNotSupportedException, AccessException {
+			@RequestParam(required=false) String oldPassword,
+			@RequestParam(required=false) String fbLink,
+			@RequestParam(required=false) String igLink,
+			@RequestParam(required=false) String vkLink
+			) throws IOException, AccessException {
 		String currentLogin;
 		if(optionalLogin.isPresent()) {
 			currentLogin = optionalLogin.get();
@@ -70,6 +73,15 @@ public class UserController {
 		}
 		if(login != null && login.length() > 0) {
 			user.setLogin(login);
+		}
+		if(fbLink != null && fbLink.length() > 0) {
+			user.setFbLink(fbLink);
+		}
+		if(igLink != null && igLink.length() > 0) {
+			user.setIgLink(igLink);
+		}
+		if(vkLink != null && vkLink.length() > 0) {
+			user.setVkLink(vkLink);
 		}
 		if(password != null && password.length() > 0) {
 			if(!passwordEncoder.matches(oldPassword, user.getPassword())) {
@@ -118,12 +130,7 @@ public class UserController {
 	
 	public User getAuthUser() throws AuthUserNotFoundException {
 		try {
-			String authLogin = UserController.getAuthLogin();
-			User authUser = userRepository.findByLogin(authLogin);
-			if(authUser == null) {
-				throw new AuthUserNotFoundException();
-			}
-			return authUser;
+			return userRepository.findByLogin(UserController.getAuthLogin());
 		} catch(NullPointerException e) {
 			log.error(Util.EXCEPTION_LOG_MESSAGE, e);
 			return null;

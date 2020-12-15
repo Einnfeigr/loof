@@ -1,3 +1,37 @@
+@font-face {
+	font-family: break;
+	src: url('/fonts/Break Regular.ttf');
+}
+
+@font-face {
+	font-family: break;
+	src: url('/fonts/Break Bold.ttf');
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: comfortaa;
+	src: url('/fonts/Comfortaa-Regular.ttf');
+}
+
+@font-face {
+	font-family: comfortaa;
+	src: url('/fonts/Comfortaa-Bold.ttf');
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: comfortaa;
+	src: url('/fonts/Comfortaa-Light.ttf');
+	font-weight: light;
+}
+
+@font-face {
+	font-family: comfortaa;
+	src: url('/fonts/Comfortaa-Medium.ttf');
+	font-weight: medium;
+}
+
 .preload * {
 	-webkit-transition: none;
 	-moz-transition: none;
@@ -5,16 +39,55 @@
 	-o-transition: none;
 }
 
+.loading {
+	opacity: 0;
+	position: absolute;
+	font-size: 20vh;
+	color: white;
+	font-family: break;
+	left: -2em;
+}
+
+.loading.animated {
+	animation: load 1s infinite;
+	animation-direction: alternate;
+	animation-timing-function: ease-in-out;	
+}
+
+@keyframes load {
+	from {
+		left: -1em;
+	}
+	10% {
+		opacity: 0;
+	}
+	15% {
+		opacity: 1;
+	}
+	75% {
+		opacity: 1;
+	}
+	90% {
+		opacity: 0;
+	}
+	to {
+		left: calc(100vw + 0.5em);
+		opacity: 0;
+	}
+}
+
 body {	
-	font-family: 'Fira Sans', sans-serif;
-	overflow-x: hidden;
+	font-family: comfortaa;
+	font-weight: normal;
+	overflow: hidden;
+	width: 100vw;
+	height: 100vw;
 	margin: 0;
-	background: rgb(254, 249, 248);
+	font-size: 1rem;
 }
 
 input, select {
-	padding: 2px 5px 2px 5px;
-	min-width: 10em;
+	padding: 5px 10px;
 	box-sizing: border-box;
 	border: 1px solid hsl(0,0%,30%);
 }
@@ -23,12 +96,30 @@ input {
 	border-radius: 3.5px;
 }
 
+input[type=text], input[type=password] {
+	min-width: 35em;
+	min-height: 3em;
+}
+
 input[type=checkbox] {
 	min-width: auto;
 }
 
 input[type=select] {
 	max-width: 10em;
+}
+
+input[type=submit] {
+	color: white;
+	font-weight: semibold;
+	font-size: 1.2em;
+	padding: 10px 20px;
+	border-radius: 2.5em;
+	border: none;
+	background: #28a745 !important;
+	background-image: none;
+	border-color: none;
+	min-width: auto;
 }
 
 tr td:first-child {
@@ -46,49 +137,52 @@ table tr:last-child td {
 }
 
 .body {
-	min-height: 100vh;
+	position: relative;
+	max-height: 100vh;
+	overflow-x: hidden;
 }
 
 .page {
 	position: relative;
+	min-height: 100vh;
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: column;
-	padding-bottom: 35px;
+	padding: 15px;
+	padding-bottom: 130px;
 }
 
 .page h1 {
+	font-size: 5.7em;
 	text-align: center;
+	font-weight: lighter;
 }
 
-h1, h2, h3, h4 {
-	font-weight: normal;
+.error {
+	font-style: italic;
 }
 
 a {
-	text-decoration: none;
 	color: black;
-	cursor: pointer;
-	line-height: 150%;
-	border: 1px dashed black;
-	border-width: 0 0 1px 0;
 }
 
 .centered {
 	text-align: center;
 }
 
-.login {
+.login .content {
 	display: flex;
 	flex-flow: column;
 	justify-content: center;
-	height: calc(100vh - 30px - 3em - 35px);
 	align-items: center;
 }
 
-.loginForm td {
+.loginForm {
 	display: flex;
+	flex-flow: column;
 	justify-content: center;
+	align-items: flex-start;
+	gap: 10px;
 }
 
 .tasks {
@@ -97,26 +191,6 @@ a {
 	flex-wrap: wrap;
 	padding: 15px;
 	gap: 20px;
-}
-
-.tasks .task {
-	width: 30%;
-	min-width: 250px;
-	flex-shrink: 1;
-	display: flex;
-	flex-flow: column;
-	box-sizing: border-box;
-	padding: 10px;
-	background: rgba(200,200,200,0.3);
-	box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
-}
-
-.tasks .task .text p {
-	height: 250px;
-	overflow-y: scroll;
-	text-overflow: ellipsis;
-	margin-top: 5px;
-	margin-left: 10px;
 }
 
 textarea {
@@ -129,6 +203,7 @@ textarea {
 }
 
 .pageNav {
+	z-index: 2;
 	padding: 5px;
 }
 
@@ -140,6 +215,7 @@ textarea {
 }
 
 .content {
+	z-index: 2;
 	padding: 5px;
 }
 
@@ -201,69 +277,6 @@ textarea {
 	gap: 25px;
 }
 
-.scheduleWrapper {
-	display: flex;
-	padding: 0;
-	width: auto;
-	align-items: center;
-	flex-flow: column;
-}
-
-.schedule {
-	width: 100%;
-	font-size: 1rem;
-	overflow-x: auto;
-	max-width: calc(100% - 30px);	
-	border-collapse: collapse;
-}
-
-.schedule input, .schedule select {
-	min-width: auto;
-}
-
-.schedule td, .schedule th {
-	border: 1px solid rgba(150,150,150);
-	overflow-x: hidden;
-	box-sizing: border-box;
-	text-overflow: ellipsis;
-	width: 3rem;
-}
-
-.schedule th {
-	background: rgb(200,130,130);
-}
-
-.schedule .today {
-	color: red;
-	background-color: yellow;
-}
-
-.schedule .bottom {
-	flex: 0 0 calc(6rem + 3rem * 7);
-	max-width: calc(6rem + 3rem * 7);
-}
-
-.schedule .userName {
-	flex: 0 0 6rem;
-	padding: 0.2em;
-	max-width: 6rem;
-}
-
-.schedule tr.days {
-	text-align: center;
-}
-
-.schedule td {
-	text-align: center;
-	background: white;
-	min-height: 2em;
-	padding: 0.2em;
-}
-
-.schedule tr:last-child td {
-	padding-top: 0;
-}
-
 .shortcut {
 	max-width: 5em;
 }
@@ -312,3 +325,55 @@ textarea {
 .edHiddenElement.edHidden {
 	max-height: 0;
 }
+
+.linkPane {
+	display: flex;
+	flex-flow: column;
+	flex-wrap: nowrap;
+	align-items: center;
+	font-size: 1.35em;
+	text-align: center;
+}
+
+.linkPane span:first-child, .linkPane a:first-child {
+	margin-top: 0;
+}
+
+.linkPane span, .linkPane a {
+	margin-top: 2.5em;
+}
+
+.welcome {
+	position: relative;
+	top: 10px;
+	text-align: center;
+	width: 100%;
+	left: 0;
+}
+
+.welcome span {
+	font-size: 1.75em;
+}
+
+.welcome h1 {
+	font-weight: bold;
+	font-family: break;
+	margin-top: 1rem;
+}
+
+.page.main {
+	background-color: white;
+	background-image: url('/img/background.jpg');
+	background-size: cover;
+}
+
+.page.main:before {
+	content: "";
+	left: 0;
+	top: 0;
+	background: rgba(255,255,255,0.65);
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+

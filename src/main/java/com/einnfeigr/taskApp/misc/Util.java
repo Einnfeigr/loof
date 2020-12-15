@@ -49,6 +49,9 @@ public class Util {
 	public static <T> Map<String, T> arrayToMap(T[] t) {
 		Map<String, T> map = new HashMap<>();
 		for(int x = 0; x+1 < t.length; x += 2) {
+			if(t[x+1] == null) {
+				continue;
+			}
 			map.put(t[x].toString(), t[x+1]);
 		}
 		return map;

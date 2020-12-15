@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.einnfeigr.taskApp.config.WebSecurityConfig;
+import com.einnfeigr.taskApp.controller.rest.CodeController;
 import com.einnfeigr.taskApp.controller.rest.UserController;
 import com.einnfeigr.taskApp.exception.controller.AccessException;
+import com.einnfeigr.taskApp.exception.controller.AuthUserNotFoundException;
 import com.einnfeigr.taskApp.misc.mav.ModelAndViewBuilder;
 import com.einnfeigr.taskApp.pojo.User;
 
@@ -21,6 +24,37 @@ public class ViewController {
 	@Autowired
 	private UserController userController;
 
+	@Autowired
+	private CodeController codeController;
+	
+	@GetMapping("/register")
+	public ModelAndView showRegisterPage(Device device, @RequestParam(required=false) String code)
+			throws AuthUserNotFoundException, IOException {
+		Boolean isCorrect = code == null || code.equals("") || codeController.isCorrect(code);
+		return new ModelAndViewBuilder(device, userController.getAuthUser())
+				.page()
+					.path("templates/register")
+					.data("id", isCorrect ? code : null,
+							"error", isCorrect ? null : "Введенный код недействителен")
+					.and()
+				.data("excludeHeader", true)
+				.build();
+	}
+	
+	@GetMapping("/generate")
+	public ModelAndView showGeneratePage(Device device) 
+			throws AuthUserNotFoundException, IOException, AccessException {
+		User user = userController.getAuthUser();
+		if(user.getLogin() != WebSecurityConfig.ADMIN_LOGIN) {
+			throw new AccessException("У вас нет возможности просматривать данную страницу");
+		}
+		return new ModelAndViewBuilder(device, userController.getAuthUser())
+				.page()
+					.path("templates/generate")
+					.and()
+				.build();
+	}
+	
 	@GetMapping("/users")
 	public ModelAndView showUsers(Device device) throws IOException, 
 			AccessException {
@@ -41,10 +75,11 @@ public class ViewController {
 					throws IOException {
 		return new ModelAndViewBuilder(device, userController.getAuthUser()) 
 				.page()
-					.title("Главная")
 					.path("templates/main")
 					.and()
-				.data("page.main", true, "excludeBack", true)
+				.data("page.main", true, "excludeBack", true, "excludeHeader", true, 
+						"pageName", "main")				
+				.title("")
 				.build();
 	}
 

@@ -1,0 +1,43 @@
+{{#id}}
+	<form id="register" class="dynamic reload" method="POST" action="/user/add">
+	<input type="hidden" name="id" value={{id}}" />
+	</form>
+	<table>
+		<tr>
+			<td>Имя:</td>
+			<td><input form="register" type="text" name="name" value="" /></td>
+		</tr>
+		<tr>
+			<td>Логин:</td>
+			<td><input form="register" type="text" name="login" value=""/></td>
+		</tr>
+		<tr>
+			<td>Пароль:</td>
+			<td><input form="register" type="password" name="password" value="" /></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input form="register" name="submit" type="submit" value="Подтвердить" /></td>
+		</tr>
+	</table>
+{{/id}}
+{{^id}}
+	{{#error}}
+		<div class="errorPane">
+			{{error}}
+		</div>
+	{{/error}}
+	<form id="code" method="GET" action="/register">
+	</form>
+	<table>
+		<tr>
+			<td>Введите id чтобы продолжить</td>
+		</tr>
+		<tr>
+			<td><input form="code" type="text" name="code" placeholder="Код длиной 8 символов"/></td>
+		</tr>
+		<tr>
+			<td><input form="code" type="submit" value="Проверить"/></td>
+		</tr>
+	</table>
+{{/id}}

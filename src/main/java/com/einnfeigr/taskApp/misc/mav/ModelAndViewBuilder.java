@@ -77,6 +77,9 @@ public class ModelAndViewBuilder {
 		if(basisData.get("title") == null) {
 			basisData.put("title", basisData.get("pageTitle"));
 		}
+		if(basisData.get("title") != null && basisData.get("title").equals("")) {
+			basisData.remove("title");
+		}
 		addExistsMark(basisData);
 		addExistsMark(page.getData());
 		data("page", page.compile());
