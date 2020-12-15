@@ -6,10 +6,10 @@
 	<body class="preload">
 		<div class="body">
 			{{>misc/elements/preloader}}
-			{{^excludeHeader}}
-				{{>misc/elements/header}}
-			{{/excludeHeader}}
 			<div class="page {{#pageName}}{{pageName}}{{/pageName}}">
+				{{^excludeHeader}}
+					{{>misc/elements/header}}
+				{{/excludeHeader}}
 				<div class="pageNav">
 					{{#pageTitle}}
 						<h1>{{pageTitle}}</h1>

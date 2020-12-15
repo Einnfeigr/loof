@@ -4,28 +4,15 @@ var currentCheckbox;
 
 $(window).on('load', function() {
 	loaded = true;
-	setTimeout(function() {
-		$('.previewBackground').fadeOut(500, function() {
-			$('.loading').hide();
-			$("#loading").removeClass('animated');
-		});
-	}, 2000);
 });
 
 $(document).ready(function() {
-	/*$(".loading.animated").one('oanimationend', function(e) {
-		alert("a");
-		$('.previewBackground').fadeOut(500, function() {
-			$('.loading').hide();
-			$("#loading").removeClass('animated');
-		});
-	});*/
 	setTimeout(function() {
 		$('.previewBackground').fadeOut(500, function() {
 			$('.loading').hide();
 			$("#loading").removeClass('animated');
 		});
-	}, 2000);
+	}, 250);
 	if($('.status').length > 1) {
 		$('.status.hidable').removeClass('status');
 	}

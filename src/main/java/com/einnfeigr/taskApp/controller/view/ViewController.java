@@ -37,7 +37,6 @@ public class ViewController {
 					.data("id", isCorrect ? code : null,
 							"error", isCorrect ? null : "Введенный код недействителен")
 					.and()
-				.data("excludeHeader", true)
 				.build();
 	}
 	

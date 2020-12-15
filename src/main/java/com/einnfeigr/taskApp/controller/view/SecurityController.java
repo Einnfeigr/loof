@@ -34,13 +34,13 @@ public class SecurityController {
 				data.put("error", error);
 			}
 			return new ModelAndViewBuilder(device, null)
-					.title("Вход")
+					.title("Войти")
 					.page()
+						.title("")
 						.path("templates/login")
 						.data(data)
 						.and()
-					.data("excludeNav", true, "excludeHeader", true, "excludeBack", true, 
-							"pageName", "login")
+					.data("pageName", "login")
 					.build();
 		} catch(Exception e) {
 			logger.error(Util.EXCEPTION_LOG_MESSAGE, e);
