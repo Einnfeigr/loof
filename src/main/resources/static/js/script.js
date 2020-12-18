@@ -8,11 +8,18 @@ $(window).on('load', function() {
 
 $(document).ready(function() {
 	setTimeout(function() {
-		$('.previewBackground').fadeOut(500, function() {
-			$('.loading').hide();
-			$("#loading").removeClass('animated');
-		});
-	}, 250);
+		$('.loading').removeClass('animated');
+		$('.loading').addClass('loaded');
+		$('.loading.loaded').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
+			setTimeout(function() {
+				$('.previewBackground').fadeOut(500, function() {
+					$('.loading').hide();
+				});
+			}, 350);
+		});	
+	}, 200);
+	
+
 	if($('.status').length > 1) {
 		$('.status.hidable').removeClass('status');
 	}
