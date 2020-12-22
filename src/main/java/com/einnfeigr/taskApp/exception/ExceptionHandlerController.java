@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.einnfeigr.taskApp.controller.rest.UserController;
 import com.einnfeigr.taskApp.controller.view.ViewController;
+import com.einnfeigr.taskApp.exception.controller.AccessException;
 import com.einnfeigr.taskApp.exception.controller.AuthUserNotFoundException;
 import com.einnfeigr.taskApp.exception.controller.NotFoundException;
 import com.einnfeigr.taskApp.exception.controller.UserNotFoundException;
@@ -45,6 +46,9 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 		if(e instanceof NotFoundException && !(e instanceof UserNotFoundException)) {
 			textPath = "templates/text/ru/notFound";
 			response.setStatus(404);
+		} else if(e instanceof AccessException) {
+			textPath = "templates/text/ru/error";
+			response.setStatus(400);
 		} else {
 			textPath = "templates/text/ru/error";
 			response.setStatus(503);
@@ -69,6 +73,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 						.and()
 					.build();
 		} catch(IOException | NullPointerException ex) {
+			logger.info("Handler caught an exception while running: ", ex);
 			return new ModelAndViewBuilder(device, authUser)
 					.page()
 						.path("templates/error")

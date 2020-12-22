@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     		throws UsernameNotFoundException {
         User user = null;
 		try {
-			user = userController.getUser(name);
+			user = userController.get(name);
 		} catch (UserNotFoundException | AccessException e) {
 			logger.error(Util.EXCEPTION_LOG_MESSAGE, e);
 		}

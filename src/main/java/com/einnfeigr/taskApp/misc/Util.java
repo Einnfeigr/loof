@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Random;
 
 public class Util {
 
 	private static Properties props;	
-	public static final String EXCEPTION_LOG_MESSAGE = 
-			"exception has been caught";
+	public static final String EXCEPTION_LOG_MESSAGE = "exception has been caught";
 
 	public Util() {
 		if(props == null) {
@@ -21,29 +21,6 @@ public class Util {
 				props.putAll(env);
 			}
 		}
-	}
-	
-	public String getVar(String key) {
-		if(!props.containsKey(key)) {
-			return null;
-		}
-		return props.get(key).toString();
-	}
-	
-	public void setVar(String key, String val) {
-		props.put(key, val);
-	}
-	
-	public void saveVar(String key, String val) {
-		
-	}
-	
-	public static List<Cloneable> cloneList(List<Cloneable> list) {
-		List<Cloneable> cloned = new ArrayList<>();
-		for(Cloneable cloneable : list) {
-			cloned.add(cloneable);
-		}
-		return cloned;
 	}
 	
 	public static <T> Map<String, T> arrayToMap(T[] t) {
@@ -76,44 +53,26 @@ public class Util {
 		}
 		return entryList;
 	}
-	
-	public static String getLocalizedMonthNameByNum(int number) {
-		switch(number) {
-		case(1):
-			return "Январь";
-		case(2):
-			return "Февраль";
-		case(3):
-			return "Март";
-		case(4):
-			return "Апрель";
-		case(5):
-			return "Май";
-		case(6):
-			return "Июнь";
-		case(7):
-			return "Июль";
-		case(8):
-			return "Август";
-		case(9):
-			return "Сентябрь";
-		case(10):
-			return "Октябрь";
-		case(11):
-			return "Ноябрь";
-		case(12):
-			return "Декабрь";
-		default:
-			return "-";
-		}
-	}
-	
+
 	public static boolean validateName(String name) {
 		if(name == null || name.length() < 1 || name.equals(" ")) {
 			return false;
 		}
 		return true;
 	}
+		
+	public static String generateCode(int length) {
+		return generateCode(length, new Random());
+	}
 	
+	public static String generateCode(int length, Random random) {
+		StringBuilder sb = new StringBuilder();
+		for(char r = (char)random.nextInt(); sb.length() < length; r = (char)random.nextInt()) {
+			if(r >= '0' && r <= '9') {
+				sb.append(r);
+			} 
+		}
+		return sb.toString();
+	}
 	
 }

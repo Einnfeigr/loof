@@ -33,7 +33,7 @@ public class UserViewController {
 	public ModelAndView showUser(@PathVariable String login, Device device) 
 			throws IOException, AccessException {
 		User authUser = userController.getAuthUser();
-		User user = userController.getUser(login);
+		User user = userController.get(login);
 		ModelAndViewBuilder mavBuilder = new ModelAndViewBuilder(device,
 				authUser);
 		String title = "Информация о пользователе "+user.getName();
@@ -56,7 +56,7 @@ public class UserViewController {
 			Device device) throws IOException, AccessException {
 		Map<String, Object> data = new HashMap<>();
 		User authUser = userController.getAuthUser();
-		User user = userController.getUser(login);
+		User user = userController.get(login);
 		if(user.getId() != authUser.getId()) {
 			throw new AccessException();
 		}
@@ -80,7 +80,7 @@ public class UserViewController {
 	@GetMapping("/{login}/delete")
 	public ModelAndView showDeleteUserForm(@PathVariable String login, 
 			Device device) throws AccessException, IOException {
-		User user = userController.getUser(login);
+		User user = userController.get(login);
 		User authUser = userController.getAuthUser();
 		if(user.getId() != authUser.getId()) {
 			throw new AccessException();

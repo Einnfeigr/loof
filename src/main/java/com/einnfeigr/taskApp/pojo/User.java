@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,15 +30,12 @@ public class User implements Cloneable {
     @JsonIgnore
     @Column(name="password")
     private String password;
-    
-    @Column(name="fb_link")
-    private String fbLink;
 
-	@Column(name="ig_link")
-    private String igLink;
+    @Column(name="email")
+    private String email;
     
-    @Column(name="vk_link")
-    private String vkLink;
+    @OneToOne(mappedBy="user")
+    private RecoveryCode recoveryCode;
     
 	public Long getId() {
 		return id;
@@ -70,29 +68,21 @@ public class User implements Cloneable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public RecoveryCode getRecoveryCode() {
+		return recoveryCode;
+	}
+
+	public void setRecoveryCode(RecoveryCode recoveryCode) {
+		this.recoveryCode = recoveryCode;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	
-	 public String getFbLink() {
-		return fbLink;
-	}
-
-	public void setFbLink(String fbLink) {
-		this.fbLink = fbLink;
-	}
-
-	public String getIgLink() {
-		return igLink;
-	}
-
-	public void setIgLink(String igLink) {
-		this.igLink = igLink;
-	}
-
-	public String getVkLink() {
-		return vkLink;
-	}
-
-	public void setVkLink(String vkLink) {
-		this.vkLink = vkLink;
-	}
-
 }
