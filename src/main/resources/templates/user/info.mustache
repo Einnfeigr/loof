@@ -1,31 +1,10 @@
-Имя: {{user.name}} <br>
-Логин: {{user.login}} <br>
-Роль: {{user.role.name}} <br>
-Должность: 
-	{{#user.position}}
-		{{>../position/link}}
-	{{/user.position}}
-	{{^user.position}}
-		-
-	{{/user.position}} 
-	<br>
-{{#user.position}}
-	Заработано с начала месяца: {{earning}} <br>
-{{/user.position}}
-Руководитель: 
-	{{#user.chief}}
-		{{>link}}
-	{{/user.chief}} 
-	{{^user.chief}}
-		-
-	{{/user.chief}}
-	<br>
-Подчиненные: 
-	<ul>
-		{{#user.subordinates}}
-			<li>
-				{{>link}}
-			</li>
-		{{/user.subordinates}}
-	</ul>
-<a href="/users/{{user.login}}/tasks">Задачи</a> <br>
+<h1>{{user.name}}</h1>
+{{#isMe}}
+	<a class="settings" href="/settings">Настройки</a>
+{{/isMe}}
+{{#links}}
+	{{>../misc/link}}
+{{/links}}
+{{^links}}
+	<p>Этот пользователь пока что не добавил ссылок</p>
+{{/links}}

@@ -1,19 +1,31 @@
 {{#id}}
-	<form id="register" class="dynamic reload" method="POST" action="/user/add">
-	<input type="hidden" name="id" value={{id}}" />
+	<form id="register" class="dynamic reload" method="POST" action="/register">
+	<input type="hidden" name="id" value="{{id}}" />
 	</form>
 	<table>
 		<tr>
 			<td>Имя:</td>
+		</tr>
+		<tr>	
 			<td><input form="register" type="text" name="name" value="" /></td>
 		</tr>
 		<tr>
 			<td>Логин:</td>
+		</tr>
+		<tr>
 			<td><input form="register" type="text" name="login" value=""/></td>
 		</tr>
 		<tr>
 			<td>Пароль:</td>
+		</tr>
+		<tr>
 			<td><input form="register" type="password" name="password" value="" /></td>
+		</tr>
+		<tr>
+			<td>Почта: </td>
+		</tr>
+		<tr>
+			<td><input form="register" type="email" name="email" /></td>
 		</tr>
 		<tr>
 			<td></td>

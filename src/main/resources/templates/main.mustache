@@ -1,10 +1,15 @@
-<div class="welcome">
-	<span>Welcome to</span>
-	<h1>LOOF</h1>
-</div>
-<div class="linkPane">
-	<span>Присоединяйтесь</span>
-	<a href="/register">Регистрация</a>
-	<span>Уже зарегистрировались?</span>
-	<a href="/login">Авторизация</a>
-</div>
+{{^isMe}}
+	<div class="welcome">
+		<span>Welcome to</span>
+		<h1>LOOF</h1>
+	</div>
+	<div class="linkPane">
+		<span>Присоединяйтесь</span>
+		<a href="/register">Регистрация</a>
+		<span>Уже зарегистрировались?</span>
+		<a href="/login">Авторизация</a>
+	</div>
+{{/isMe}}
+{{#isMe}}
+	{{>user/info}}
+{{/isMe}}

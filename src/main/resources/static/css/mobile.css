@@ -1,0 +1,4 @@
+input[type=text], input[type=password], input[type=email] {
+	min-width: 90vw;
+	max-width: 90vw;
+}
