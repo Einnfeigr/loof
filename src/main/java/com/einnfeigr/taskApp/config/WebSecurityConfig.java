@@ -63,8 +63,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	http
 			.csrf().disable()
             .authorizeRequests()
-            .antMatchers("/user/list").hasRole("ADMIN")
-            .anyRequest().permitAll()
+            .antMatchers("/").permitAll()
+            .antMatchers("/user/list", "/id/generate/", "id/generate", "/api/*").hasRole("ADMIN")
+            .anyRequest().authenticated()
             .and()
             .formLogin()
             .loginPage("/login")
@@ -84,7 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		String password; 
 		User admin = null;
 		try {
-			admin = userController.getUser(ADMIN_LOGIN);
+			admin = userController.get(ADMIN_LOGIN);
 		} catch (UserNotFoundException | AccessException e) {
 			logger.error(Util.EXCEPTION_LOG_MESSAGE, e);
 		}
