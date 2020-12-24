@@ -1,10 +1,22 @@
 <h1>{{user.name}}</h1>
+{{#isAdmin}}
+	<a class="button" href="/manage">Управление</a>
+{{/isAdmin}}
 {{#isMe}}
-	<a class="settings" href="/settings">Настройки</a>
+	<a class="button" href="/settings">Настройки</a>
+	<a class="button" href="/logout">Выйти</a>
+	<a class="button" href="/delete">Удалить аккаунт</a>
 {{/isMe}}
 {{#links}}
 	{{>../misc/link}}
 {{/links}}
 {{^links}}
-	<p>Этот пользователь пока что не добавил ссылок</p>
+	<p>
+		{{#isMe}}
+			Вы пока что не добавили ссылки 
+		{{/isMe}}
+		{{^isMe}}
+			Этот пользователь пока что не добавил ссылок
+		{{/isMe}}
+	</p>
 {{/links}}

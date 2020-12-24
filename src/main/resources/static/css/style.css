@@ -401,7 +401,7 @@ textarea {
 	height: 100%;
 }
 
-.page.recoveryGenerate .content {
+.page .content {
 	display: flex;
 	flex-flow: column;
 	align-items: center;
@@ -433,7 +433,7 @@ textarea {
 	flex-flow: column;
 }
 
-.userinfo .settings {
+.button {
 	border: 2px solid black;
 	border-radius: 2em;
 	padding: 0.7em;
@@ -441,7 +441,25 @@ textarea {
 	transition: all 0.2s ease-in;
 }
 
-.userinfo .settings:hover {
+.button:hover {
 	background: black;
 	color: white;
 }
+
+.usersettings img {
+	height: 2em;
+}
+
+.usersettings .link {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	margin: 1em; 
+}
+
+.usersettings .imgwrapper {
+	display: flex;
+	justify-items: center;
+	align-items: center;
+	padding-right: 1em;
+}
+

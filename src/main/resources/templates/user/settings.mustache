@@ -1,3 +1,12 @@
 <h1>Настройки пользователя</h1>
-{{#links}}
-{{/links}}
+<form action="" method="post">
+	{{#links}}
+		<div class="link">
+			<div class="imgwrapper">
+				{{#type}}{{>../misc/linkicon}}{{/type}}
+			</div>
+			<input type="text" name="{{type.name}}" placeholder="{{type.name}}" value="{{link}}" />
+		</div>
+	{{/links}}
+	<input type="submit" value="Сохранить" />
+</form>

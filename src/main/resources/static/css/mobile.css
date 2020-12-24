@@ -1,4 +1,16 @@
 input[type=text], input[type=password], input[type=email] {
-	min-width: 90vw;
+	min-width: 75vw;
+	width: auto;
 	max-width: 90vw;
+	border: 1px solid black;
+	border-style: solid; 
+	-webkit-appearance: none;
+}
+
+input[type=submit], button {
+	-webkit-appearance: none;
+}
+
+.usersettings .link {
+	grid-template-columns: auto 75vw;
 }
