@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="link_types")
-public class LinkType {
+public class LinkType implements Comparable<LinkType> {
 
 	@Id
 	@Column
@@ -16,6 +16,9 @@ public class LinkType {
 	@Column
 	private String name;
 
+	@Column
+	private Integer priority;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -30,6 +33,19 @@ public class LinkType {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Integer priority) {
+		this.priority = priority;
+	}
+
+	@Override
+	public int compareTo(LinkType arg0) {
+		return arg0.priority > this.priority ? -1 : 1;
 	}
 	
 }

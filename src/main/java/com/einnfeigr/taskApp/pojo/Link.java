@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="links")
-public class Link {
+public class Link implements Comparable<Link> {
 	
 	@Id
 	@Column
@@ -64,6 +64,11 @@ public class Link {
 
 	public void setLink(String link) {
 		this.link = link;
+	}
+
+	@Override
+	public int compareTo(Link o) {
+		return this.getType().compareTo(o.getType());
 	}
 	
 }

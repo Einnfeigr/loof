@@ -97,6 +97,10 @@ public class UserController {
 		return userRepository.save(user);
 	}
 		
+	public void removeUser(User user) throws UserNotFoundException, AccessException {
+		removeUser(Optional.of(user.getLogin()));
+	}
+	
 	@PostMapping("api/users/delete")		
 	public void removeUser(@RequestParam("login") Optional<String> optionalLogin) 
 					throws UserNotFoundException, AccessException {

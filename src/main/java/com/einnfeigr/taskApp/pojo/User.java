@@ -1,10 +1,15 @@
 package com.einnfeigr.taskApp.pojo;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -36,6 +41,9 @@ public class User implements Cloneable {
     
     @OneToOne(mappedBy="user")
     private RecoveryCode recoveryCode;
+    
+    @OneToMany(mappedBy="user")
+    private List<Link> links = new ArrayList<>();
     
 	public Long getId() {
 		return id;
@@ -83,6 +91,54 @@ public class User implements Cloneable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public List<Link> getLinks() {
+		return links.stream().sorted().collect(Collectors.toList());
+	}
+	
+	public List<Link> getLinks(List<LinkType> types) {
+		List<Link> links = this.links.stream().sorted().collect(Collectors.toList());
+		for(LinkType type : types) {
+			if(!hasLink(type)) {
+				Link link = new Link();
+				link.setType(type);
+				links.add(link);
+			}
+		}
+		return links;
+	}
+
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
+
+	public boolean hasLink(LinkType type) {
+		for(Link link : links) {
+			if(link.getType().getName().equals(type.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void addLink(Link link) {
+		if(hasLink(link.getType())) {
+			removeLink(link.getType());
+		}
+		links.add(link);
+	}
+	
+	public void removeLink(LinkType type) {
+		int index = -1;
+		for(Link link : links) {
+			if(link.getType().getName().equals(type.getName())) {
+				index = links.indexOf(link);
+			}
+		}
+		if(index > -1) {
+			links.remove(index);			
+		}
 	}
 	
 }

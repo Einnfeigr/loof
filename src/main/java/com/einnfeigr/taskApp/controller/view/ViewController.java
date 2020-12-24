@@ -3,6 +3,11 @@ package com.einnfeigr.taskApp.controller.view;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
@@ -23,6 +28,7 @@ import com.einnfeigr.taskApp.exception.controller.AuthUserNotFoundException;
 import com.einnfeigr.taskApp.exception.controller.UserNotFoundException;
 import com.einnfeigr.taskApp.misc.MailUtils;
 import com.einnfeigr.taskApp.misc.mav.ModelAndViewBuilder;
+import com.einnfeigr.taskApp.pojo.Link;
 import com.einnfeigr.taskApp.pojo.LinkType;
 import com.einnfeigr.taskApp.pojo.RecoveryCode;
 import com.einnfeigr.taskApp.pojo.User;
@@ -101,7 +107,10 @@ public class ViewController {
 		return new ModelAndViewBuilder(device, userController.getAuthUser()) 
 				.page()
 					.path("templates/main")
-					.data("isMe", user != null, "user", user)
+					.data("isMe", user != null, "user", user, 
+						"links", user == null ? null : user.getLinks(),
+						"isAdmin", user == null ? null : WebSecurityConfig.ADMIN_LOGIN
+								.equals(user.getLogin()))
 					.and()
 				.data("page.main", true, "excludeBack", true, "excludeHeader", true, 
 						"pageName", user != null ? "userinfo" : "main")				
@@ -109,16 +118,38 @@ public class ViewController {
 				.build();
 	}
 
+	@PostMapping("/settings")
+	public ModelAndView applySettings(Device device, HttpServletRequest request) 
+			throws AuthUserNotFoundException {
+		Map<String, String[]> params = request.getParameterMap();
+		User user = userController.getAuthUser();
+		List<LinkType> linkTypes = linkController.getAllLinkTypes();
+		List<String> linkNames = new ArrayList<>();
+		linkTypes.forEach(t -> linkNames.add(t.getName()));
+		for(Entry<String, String[]> param : params.entrySet()) {
+			if(param.getValue() != null && linkNames.contains(param.getKey())) {
+				Link link = new Link();
+				LinkType type = linkController.getByName(param.getKey());
+				link.setLink(param.getValue()[0]);
+				link.setType(type);
+				link.setUser(user);
+				user.addLink(link);
+				user.getLinks().add(linkController.save(link));
+			}
+		}
+		userController.save(user);
+		return new ModelAndView("redirect:/");
+	}
+	
 	@GetMapping("/settings")
 	public ModelAndView showSettingsPage(Device device) 
 			throws AuthUserNotFoundException, IOException {
 		User user = userController.getAuthUser();
-		List<LinkType> linkList = linkController.getAllLinkTypes();
 		return new ModelAndViewBuilder(device, userController.getAuthUser())
 				.page()
 					.title("")
 					.path("user/settings")
-					.data("user", user, "links", linkList)
+					.data("user", user, "links", user.getLinks(linkController.getAllLinkTypes()))
 					.and()
 				.title("Настройки пользователя "+user.getName())
 				.data("pageName", "usersettings")
@@ -170,15 +201,16 @@ public class ViewController {
 	}
 	
 	@GetMapping("/users/{login}")
-	public ModelAndView viewUserInfo(Device device, @RequestParam String login) 
-			  throws AuthUserNotFoundException, IOException {
-		User user = userController.getAuthUser();
-		return new ModelAndViewBuilder(device, user) 
+	public ModelAndView viewUserInfo(Device device, @PathVariable String login) 
+			  throws AuthUserNotFoundException, IOException, AccessException {
+		User user = userController.get(login);
+		return new ModelAndViewBuilder(device, userController.getAuthUser()) 
 				.page()
 					.title("")
 					.path("/user/info")
+					.data("links", user.getLinks())
 					.and()
-				.data("isMe", user.getLogin().equals(login))
+				.title(user.getName())
 				.build();
 	}
 	
@@ -198,5 +230,22 @@ public class ViewController {
 			throws AccessException {
 		codeController.generateCodes(count);
 		return new ModelAndView("redirect:/id/generate");
+	}
+	
+	@PostMapping("/delete")
+	public ModelAndView delete() 
+			throws AuthUserNotFoundException, UserNotFoundException, AccessException {
+		userController.removeUser(userController.getAuthUser());
+		return new ModelAndView("redirect:/logout");
+	}
+	
+	@GetMapping("/delete")
+	public ModelAndView showDelete(Device device) throws AuthUserNotFoundException, IOException {
+		return new ModelAndViewBuilder(device, userController.getAuthUser())
+				.page()
+					.path("/user/delete")
+					.data("isAdmin", UserController.isAuthAdmin())
+					.and()
+				.build();
 	}
 }
