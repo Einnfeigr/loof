@@ -1,37 +1,18 @@
 {{#id}}
-	<form id="register" class="dynamic reload" method="POST" action="/register">
-	<input type="hidden" name="id" value="{{id}}" />
+	<form method="POST" >
+		<input type="hidden" name="id" value="{{id}}" />
+		<span><img src="/img/icon/005-id card.svg" />Имя</span>
+		<input type="text" name="name" value="" />
+		<span><img src="/img/icon/019-user.svg" />Логин</span>
+		<input type="text" name="login" value=""/>
+		<span><img src="/img/icon/email.svg" />Почта</span>
+		<input type="email" name="email" />
+		<span><img src="/img/icon/009-lock.svg" />Пароль</span>
+		<input type="password" name="password" value="" />
+		<div class="buttons">
+			<input name="submit" type="submit" value="Подтвердить" />
+		</div>
 	</form>
-	<table>
-		<tr>
-			<td>Имя:</td>
-		</tr>
-		<tr>	
-			<td><input form="register" type="text" name="name" value="" /></td>
-		</tr>
-		<tr>
-			<td>Логин:</td>
-		</tr>
-		<tr>
-			<td><input form="register" type="text" name="login" value=""/></td>
-		</tr>
-		<tr>
-			<td>Пароль:</td>
-		</tr>
-		<tr>
-			<td><input form="register" type="password" name="password" value="" /></td>
-		</tr>
-		<tr>
-			<td>Почта: </td>
-		</tr>
-		<tr>
-			<td><input form="register" type="email" name="email" /></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td><input form="register" name="submit" type="submit" value="Подтвердить" /></td>
-		</tr>
-	</table>
 {{/id}}
 {{^id}}
 	{{#error}}

@@ -1,8 +1,25 @@
 <h2>Список пользователей</h2>
-<ul> 
-{{#users}}
-	<li>
-		{{>user/link}}
-	</li>
-{{/users}}
-</ul>
+<table> 
+	<tr>
+		<th>id</th>
+		<th>Логин</th>
+		<th>Имя</th>
+		<th>Email</th>
+	</tr>
+	{{#users}}
+		<tr>
+			<td colspan="4">
+				<hr>
+			</td>
+		</tr>
+		<tr>
+			<td>{{id}}</td>
+			<td>{{login}}</td>
+			<td>{{name}}</td>
+			<td>{{email}}</td>
+		</tr>
+	{{/users}}
+</table>
+<div class="buttons">
+	<a class="button" href="/manage">Назад</a>
+</div>

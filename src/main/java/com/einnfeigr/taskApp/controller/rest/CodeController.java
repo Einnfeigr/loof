@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.einnfeigr.taskApp.config.WebSecurityConfig;
 import com.einnfeigr.taskApp.exception.controller.AccessException;
 import com.einnfeigr.taskApp.misc.Util;
 import com.einnfeigr.taskApp.pojo.Code;
@@ -36,12 +35,12 @@ public class CodeController {
 		return ids;
 	}
 	
-	@PostMapping("/api/codes//list")
+	@PostMapping("/api/codes/list")
 	public List<Code> listCodes() {
 		return idRepo.findAll();
 	}
 	
-	@PostMapping("/api/codes//delete")
+	@PostMapping("/api/codes/delete")
 	public void delete(@RequestParam String id) throws AccessException {
 		deleteCode(id);
 	}
@@ -57,6 +56,16 @@ public class CodeController {
 			}
 		}
 		return false;
+	}
+
+	public Code get(String id) {
+		return idRepo.findById(id);
+	}
+
+	public void update(String code, String nfc) {
+		Code id = idRepo.findById(code);
+		id.setNfc(nfc);
+		idRepo.save(id);
 	}
 	
 }

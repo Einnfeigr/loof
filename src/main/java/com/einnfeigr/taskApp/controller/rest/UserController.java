@@ -90,6 +90,7 @@ public class UserController {
 			@RequestParam String email) 
 					throws AuthUserNotFoundException, AccessException {
 		User user = new User();
+		user.setCode(codeController.get(id));
 		user.setName(name);
 		user.setLogin(login);
 		user.setEmail(email);

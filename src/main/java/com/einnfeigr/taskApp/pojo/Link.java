@@ -1,5 +1,6 @@
 package com.einnfeigr.taskApp.pojo;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,7 +15,7 @@ public class Link implements Comparable<Link> {
 	@Column
 	private int id;
 	
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private LinkType type;
 	
 	@Column

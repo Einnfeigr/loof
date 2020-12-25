@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ import com.einnfeigr.taskApp.exception.controller.AuthUserNotFoundException;
 import com.einnfeigr.taskApp.exception.controller.UserNotFoundException;
 import com.einnfeigr.taskApp.misc.MailUtils;
 import com.einnfeigr.taskApp.misc.mav.ModelAndViewBuilder;
+import com.einnfeigr.taskApp.pojo.Code;
 import com.einnfeigr.taskApp.pojo.Link;
 import com.einnfeigr.taskApp.pojo.LinkType;
 import com.einnfeigr.taskApp.pojo.RecoveryCode;
@@ -35,6 +37,8 @@ import com.einnfeigr.taskApp.pojo.User;
 
 @RestController
 public class ViewController {
+	
+	private final static Logger log = LoggerFactory.getLogger(ViewController.class);
 	
 	@Autowired
 	private UserController userController;
@@ -51,10 +55,48 @@ public class ViewController {
 	@Autowired
 	private MailUtils mailUtils;
 	
+	@GetMapping("/codes")
+	public ModelAndView showCodesPage(Device device) throws AuthUserNotFoundException, IOException {
+		return new ModelAndViewBuilder(device, userController.getAuthUser())
+				.page()
+					.title("Список кодов регистрации")
+					.data("codes", codeController.listCodes())
+					.path("/codes")
+					.and()
+				.data("pageName", "codes")
+				.build();
+	}
+	
+	@PostMapping("/codes")
+	public ModelAndView updateCodes(@RequestParam List<String> ids, 
+			@RequestParam List<String> nfcs) {
+		for(int x = 0; x < ids.size(); x++) {
+			codeController.update(ids.get(x), nfcs.get(x));
+		}
+		return new ModelAndView("redirect:/");
+	}
+	
+	@GetMapping("/manage")
+	public ModelAndView showManagePage(Device device)
+			throws AuthUserNotFoundException, IOException {
+		return new ModelAndViewBuilder(device, userController.getAuthUser())
+				.page()
+					.title("")
+					.path("/manage")
+					.and()
+				.title("Управление")
+				.build();
+	}
+	
 	@GetMapping("/register")
 	public ModelAndView showRegisterPage(Device device, @RequestParam(required=false) String code)
 			throws AuthUserNotFoundException, IOException {
-		Boolean isCorrect = code == null || code.equals("") || codeController.isCorrect(code);
+		Code regCode = codeController.get(code);
+		Boolean isCorrect = code == null || !code.equals("") && codeController.isCorrect(code)
+				&& regCode != null && regCode.getNfc() != null;
+		if(regCode != null && regCode.getNfc() == null) { 
+			log.warn("Code "+regCode.getId()+" don't have mapped nfc");
+		}
 		return new ModelAndViewBuilder(device, userController.getAuthUser())
 				.page()
 					.path("templates/register")
@@ -70,18 +112,11 @@ public class ViewController {
 			@RequestParam String login,
 			@RequestParam String password,
 			@RequestParam String email) throws AuthUserNotFoundException, AccessException {
-		if(!codeController.isCorrect(id)) {
+		if(!codeController.isCorrect(""+id)) {
 			throw new AccessException("Идентификатор не найден");
 		}
-		User user = null;
-		try {
-			user = userController.addUser(id, login, password, name, email);
-		} finally {
-			if(user != null) {
-				codeController.delete(id);
-			}
-		}
-		return new ModelAndView("redirect:/");
+		userController.addUser(id, login, password, name, email);
+		return new ModelAndView("redirect:/login");
 	}	
 	
 	@GetMapping("/users")
@@ -94,7 +129,7 @@ public class ViewController {
 					.path("templates/users")
 					.data("users", users)
 				.and()
-				.data("page.users", true)
+				.data("pageName", "users")
 				.build();
 	}
 
@@ -112,8 +147,7 @@ public class ViewController {
 						"isAdmin", user == null ? null : WebSecurityConfig.ADMIN_LOGIN
 								.equals(user.getLogin()))
 					.and()
-				.data("page.main", true, "excludeBack", true, "excludeHeader", true, 
-						"pageName", user != null ? "userinfo" : "main")				
+				.data("excludeHeader", true, "pageName", user != null ? "userinfo" : "main")				
 				.title("")
 				.build();
 	}
@@ -130,10 +164,12 @@ public class ViewController {
 			if(param.getValue() != null && linkNames.contains(param.getKey())) {
 				Link link = new Link();
 				LinkType type = linkController.getByName(param.getKey());
+				type.setName(param.getKey());
 				link.setLink(param.getValue()[0]);
 				link.setType(type);
 				link.setUser(user);
 				user.addLink(link);
+				log.info(link.getId()+"");
 				user.getLinks().add(linkController.save(link));
 			}
 		}
@@ -158,7 +194,8 @@ public class ViewController {
 
 	@GetMapping("/recovery")
 	public ModelAndView showRecoveryGenerate(Device device) throws IOException {
-		return new ModelAndViewBuilder(device, userController.getAuthUser())
+		User user = userController.getAuthUser();
+		return new ModelAndViewBuilder(device, user)
 				.page()
 					.title("")
 					.path("recovery/generate")
@@ -172,6 +209,10 @@ public class ViewController {
 	public ModelAndView generateRecoveryCode(Device device, @RequestParam String email) 
 			throws UserNotFoundException, AccessException {
 		User user = userController.get(email);
+		if(user.getEmail() == null) {
+			String error = "У пользователя не указана электронная почта";
+			return new ModelAndView("redirect:/recovery?error="+error);
+		}
 		RecoveryCode recoveryCode = recoveryController.generate(user.getLogin());
 		mailUtils.sendMail(user.getEmail(), "Восстановление пароля", 
 				  "На ваш аккаунт поступил запрос на восстановление пароля. \n"

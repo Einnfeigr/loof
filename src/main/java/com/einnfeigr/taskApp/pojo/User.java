@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,8 +43,11 @@ public class User implements Cloneable {
     @OneToOne(mappedBy="user")
     private RecoveryCode recoveryCode;
     
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user", cascade=CascadeType.REMOVE)
     private List<Link> links = new ArrayList<>();
+    
+    @OneToOne(mappedBy="user")
+    private Code code;
     
 	public Long getId() {
 		return id;
@@ -139,6 +143,14 @@ public class User implements Cloneable {
 		if(index > -1) {
 			links.remove(index);			
 		}
+	}
+
+	public Code getCode() {
+		return code;
+	}
+
+	public void setCode(Code code) {
+		this.code = code;
 	}
 	
 }

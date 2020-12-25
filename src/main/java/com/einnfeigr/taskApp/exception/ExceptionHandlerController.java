@@ -56,9 +56,9 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 		if(e instanceof AuthUserNotFoundException) {
 			request.logout();
 		}
+		String message = e.getLocalizedMessage() == null ? "Ошибка" : e.getLocalizedMessage();
 		try {
-			response.setHeader("error_message", URLEncoder.encode(
-					e.getLocalizedMessage(), "UTF-8"));
+			response.setHeader("error_message", URLEncoder.encode(message, "UTF-8"));
 		} catch(Exception ex) {
 			logger.error(Util.EXCEPTION_LOG_MESSAGE, ex);
 		}

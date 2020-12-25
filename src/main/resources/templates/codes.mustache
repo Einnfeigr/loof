@@ -1,0 +1,32 @@
+{{#codes.exists}}
+<form method="post" id="codes"></form>
+<table>
+	<tr>
+		<th>
+			Код
+		</th>
+		<th>
+			nfc-тег
+		</th>
+	</tr>
+	{{#codes}}
+		<tr>
+			<td>
+				{{id}}
+				<input form="codes" type="hidden" name="ids" value="{{id}}" />
+			</td>
+			<td>
+				<input form="codes" type="text" name="nfcs" value="{{nfc}}" />
+			</td>
+		</tr>
+	{{/codes}}
+</table>
+<div class="buttons">
+	<a class="button" href="/manage">Назад</a>
+	<button form="codes" type="submit" >Сохранить</button>
+</div>
+{{/codes.exists}}
+{{^codes}}
+	В системе нет ни одного кода
+	<a class="button" href="/codes/add">Генерация кодов</a>
+{{/codes}}
