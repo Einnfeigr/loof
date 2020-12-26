@@ -1,4 +1,4 @@
-var loaded;
+var loaded = false;
 var checked = false;
 var currentCheckbox;
 
@@ -6,17 +6,29 @@ $(window).on('load', function() {
 	loaded = true;
 });
 
-$(document).ready(function() {
-	setTimeout(function() {
-		$('.loading').removeClass('animated');
-		$('.loading').addClass('loaded');
-		$('.loading.loaded').one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
+document.onreadystatechange = function(e) {
+	$('.loading.animated').on("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function(){
+		if(loaded) {
+			$('.loading').addClass('loaded');
 			setTimeout(function() {
 				$('.previewBackground').fadeOut(500, function() {
 					$('.loading').hide();
 				});
 			}, 350);
-		});	
+		} else {
+			 var el = $(this),  
+		     newone = el.clone(true);		           
+			 el.before(newone);     
+			 $(".loading:last").remove();
+		}
+	});	
+}
+
+$(document).ready(function() {
+	
+	setTimeout(function() {
+		//$('.loading').removeClass('animated');
+
 	}, 200);
 	
 

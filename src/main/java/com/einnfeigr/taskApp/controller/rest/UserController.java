@@ -21,6 +21,7 @@ import com.einnfeigr.taskApp.exception.controller.AuthUserNotFoundException;
 import com.einnfeigr.taskApp.exception.controller.ControllerException;
 import com.einnfeigr.taskApp.exception.controller.UserNotFoundException;
 import com.einnfeigr.taskApp.misc.Util;
+import com.einnfeigr.taskApp.pojo.Code;
 import com.einnfeigr.taskApp.pojo.User;
 import com.einnfeigr.taskApp.repository.UserRepository;
 
@@ -47,8 +48,7 @@ public class UserController {
 		}
 		return get(login.get());
 	}
-	
-	//TODO refactor
+
 	@PostMapping(value="api/users/{login}")
 	public void updateUser(
 			@PathVariable("login") Optional<String> optionalLogin,
@@ -90,12 +90,15 @@ public class UserController {
 			@RequestParam String email) 
 					throws AuthUserNotFoundException, AccessException {
 		User user = new User();
-		user.setCode(codeController.get(id));
+		Code code = codeController.get(id);
+		user.setCode(code);
 		user.setName(name);
 		user.setLogin(login);
 		user.setEmail(email);
 		user.setPassword(passwordEncoder.encode(password));
-		return userRepository.save(user);
+		user = userRepository.save(user);
+		codeController.save(code);
+		return user;
 	}
 		
 	public void removeUser(User user) throws UserNotFoundException, AccessException {
@@ -110,6 +113,7 @@ public class UserController {
 		}
 		String login = optionalLogin.get();
 		User user = get(login);
+		codeController.delete(user.getCode());
 		userRepository.delete(user);
 	}
 	

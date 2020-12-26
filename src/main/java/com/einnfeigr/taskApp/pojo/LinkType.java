@@ -19,6 +19,9 @@ public class LinkType implements Comparable<LinkType> {
 	@Column
 	private Integer priority;
 	
+	@Column
+	private String domain;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -46,6 +49,14 @@ public class LinkType implements Comparable<LinkType> {
 	@Override
 	public int compareTo(LinkType arg0) {
 		return arg0.priority > this.priority ? -1 : 1;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 	
 }

@@ -32,6 +32,17 @@
 	font-weight: medium;
 }
 
+.background {
+	position: absolute;
+	height: 100%;
+	min-width: 100%;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	opacity: 0.35;
+	object-fit: cover;
+}
+
 .preload * {
 	-webkit-transition: none;
 	-moz-transition: none;
@@ -130,7 +141,7 @@
 }
 
 .loading.animated {
-	animation: load 2.5s infinite linear;	
+	animation: load 2.5s 1 linear;	
 }
 
 .loading.loaded {
@@ -183,7 +194,7 @@ input[type=submit], button {
 	padding: 10px 20px;
 	border-radius: 2.5em;
 	border: none;
-	background: #28a745 !important;
+	background: #28a745;
 	background-image: none;
 	border-color: none;
 	min-width: auto;
@@ -256,6 +267,7 @@ textarea {
 }
 
 .content {
+	overflow: hidden;
 	z-index: 2;
 	padding: 5px;
 }
@@ -350,8 +362,6 @@ textarea {
 
 .page.main {
 	background-color: white;
-	background-image: url('/img/background.jpg');
-	background-size: cover;
 }
 
 .page.main:before {
@@ -401,11 +411,17 @@ textarea {
 	margin: 0.5em;
 }
 
+input[type=submit].button, button.button {
+	background: white;
+	border: 1px solid black;
+	color: black;
+}
+
 .userinfo .link {
 	margin: 0.5em;
 }
 
-.button:hover {
+.button:hover, input[type=submit].button:hover, button.button:hover {
 	background: black;
 	color: white;
 }
@@ -416,7 +432,7 @@ textarea {
 
 .usersettings .link {
 	display: grid;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: auto auto auto;
 	margin: 1em; 
 }
 

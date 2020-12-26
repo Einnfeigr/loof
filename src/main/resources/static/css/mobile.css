@@ -12,5 +12,5 @@ input[type=submit], button {
 }
 
 .usersettings .link {
-	grid-template-columns: auto 75vw;
+	grid-template-columns: auto auto 75vw;
 }

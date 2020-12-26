@@ -21,7 +21,7 @@ public class LinkController {
 	@Autowired
 	private LinkRepository linkRepository;
 	
-	public LinkType getByName(String name) {
+	public LinkType getTypeByName(String name) {
 		return linkTypeRepository.getByName(name);
 	}
 	
@@ -40,6 +40,10 @@ public class LinkController {
 
 	public Link save(Link link) {
 		return linkRepository.save(link);
+	}
+	
+	public void delete(Link link) {
+		linkRepository.delete(link);
 	}
 	
 }

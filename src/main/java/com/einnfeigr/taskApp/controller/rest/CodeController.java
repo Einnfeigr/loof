@@ -45,6 +45,10 @@ public class CodeController {
 		deleteCode(id);
 	}
 	
+	public void delete(Code code) {
+		idRepo.delete(code);
+	}
+	
 	public void deleteCode(String id) {
 		idRepo.delete(idRepo.findById(id));
 	}
@@ -52,7 +56,7 @@ public class CodeController {
 	public boolean isCorrect(String id) {
 		for(Code code : listCodes()) {
 			if(code.getId().equals(id)) {
-				return true;
+				return code.getNfc() != null && !code.getNfc().equals("");
 			}
 		}
 		return false;
@@ -66,6 +70,10 @@ public class CodeController {
 		Code id = idRepo.findById(code);
 		id.setNfc(nfc);
 		idRepo.save(id);
+	}
+	
+	public Code save(Code code) {
+		return idRepo.save(code);
 	}
 	
 }

@@ -104,13 +104,21 @@ public class User implements Cloneable {
 	public List<Link> getLinks(List<LinkType> types) {
 		List<Link> links = this.links.stream().sorted().collect(Collectors.toList());
 		for(LinkType type : types) {
-			if(!hasLink(type)) {
+			if(!hasLink(type) || type.getName().toLowerCase().equals("custom")) {
 				Link link = new Link();
 				link.setType(type);
+				link.setIsCustom(type.getName().toLowerCase().equals("custom") 
+						|| type.getName().toLowerCase().equals("email"));
 				links.add(link);
 			}
 		}
 		return links;
+	}
+	
+	public List<Link> getLinks(LinkType type) {
+		return links.stream()
+				.filter(l -> l.getType().getName().equals(type.getName()))
+				.collect(Collectors.toList());
 	}
 
 	public void setLinks(List<Link> links) {
@@ -125,11 +133,17 @@ public class User implements Cloneable {
 		}
 		return false;
 	}
+	
+	public boolean hasLink(String name) {
+		for(Link link : links) {
+			if(link.getTitle().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public void addLink(Link link) {
-		if(hasLink(link.getType())) {
-			removeLink(link.getType());
-		}
 		links.add(link);
 	}
 	
@@ -145,12 +159,33 @@ public class User implements Cloneable {
 		}
 	}
 
+	public void removeLink(String name) {
+		int index = -1;
+		for(Link link : links) {
+			if(link.getType().getName().equals(name)) {
+				index = links.indexOf(link);
+			}
+		}
+		if(index > -1) {
+			links.remove(index);
+		}
+	}
+	
 	public Code getCode() {
 		return code;
 	}
 
 	public void setCode(Code code) {
 		this.code = code;
+	}
+
+	public boolean hasLinkUrl(String url) {
+		for(Link link : links) {
+			if(link.getLink().equals(url)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

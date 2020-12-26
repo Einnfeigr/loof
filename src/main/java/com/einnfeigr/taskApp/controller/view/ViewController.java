@@ -1,7 +1,6 @@
 package com.einnfeigr.taskApp.controller.view;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,6 +38,9 @@ import com.einnfeigr.taskApp.pojo.User;
 public class ViewController {
 	
 	private final static Logger log = LoggerFactory.getLogger(ViewController.class);
+	
+	public final static String RECOVERY_NO_MAIL_ERROR = "У пользователя не указан почтовый ящик";
+	public final static String RECOVERY_NO_USER_ERROR = "Пользователь \'%s\' не найден";
 	
 	@Autowired
 	private UserController userController;
@@ -92,8 +94,7 @@ public class ViewController {
 	public ModelAndView showRegisterPage(Device device, @RequestParam(required=false) String code)
 			throws AuthUserNotFoundException, IOException {
 		Code regCode = codeController.get(code);
-		Boolean isCorrect = code == null || !code.equals("") && codeController.isCorrect(code)
-				&& regCode != null && regCode.getNfc() != null;
+		Boolean isCorrect = code != null && !code.equals("") && codeController.isCorrect(code);
 		if(regCode != null && regCode.getNfc() == null) { 
 			log.warn("Code "+regCode.getId()+" don't have mapped nfc");
 		}
@@ -101,7 +102,8 @@ public class ViewController {
 				.page()
 					.path("templates/register")
 					.data("id", isCorrect ? code : null,
-							"error", isCorrect ? null : "Введенный код недействителен")
+							"error", isCorrect ? null : 
+								code == null ? null : "Введенный код недействителен")
 					.and()
 				.build();
 	}
@@ -153,28 +155,63 @@ public class ViewController {
 	}
 
 	@PostMapping("/settings")
-	public ModelAndView applySettings(Device device, HttpServletRequest request) 
+	public ModelAndView applySettings(HttpServletRequest request) 
 			throws AuthUserNotFoundException {
 		Map<String, String[]> params = request.getParameterMap();
 		User user = userController.getAuthUser();
-		List<LinkType> linkTypes = linkController.getAllLinkTypes();
-		List<String> linkNames = new ArrayList<>();
-		linkTypes.forEach(t -> linkNames.add(t.getName()));
+		List<String> linkNames = linkController.getNames();
 		for(Entry<String, String[]> param : params.entrySet()) {
 			if(param.getValue() != null && linkNames.contains(param.getKey())) {
-				Link link = new Link();
-				LinkType type = linkController.getByName(param.getKey());
-				type.setName(param.getKey());
-				link.setLink(param.getValue()[0]);
-				link.setType(type);
-				link.setUser(user);
-				user.addLink(link);
-				log.info(link.getId()+"");
-				user.getLinks().add(linkController.save(link));
+				LinkType type = linkController.getTypeByName(param.getKey());
+				for(String url : param.getValue()) {
+					generateLink(user, type, url);
+				}
 			}
 		}
-		userController.save(user);
 		return new ModelAndView("redirect:/");
+	}
+	
+	private void generateLink(User user, LinkType type, String url) {
+		if(url == null || url.equals("")) {
+			return;
+		}
+		if(user.hasLinkUrl(url)) {
+			return;
+		}
+		if(!type.getName().toLowerCase().equals("custom") && user.hasLink(type)) {
+			for(Link uLink : user.getLinks(type)) {
+				linkController.delete(uLink);
+			}
+		}
+		url = url.replace("http://", "").replace("https://", "");
+		if(type.getDomain() != null) {
+			url = url.contains(type.getDomain()) ? url : type.getDomain() + "/" + url;
+		}
+		if(!type.getName().toLowerCase().equals("email")) {
+			url = "https://"+url;
+		}
+		Link link = new Link();
+		link.setLink(url);
+		link.setType(type);
+		link.setUser(user);
+		link.setTitle(type.getName());
+		link.setIsCustom(type.getName().equals("custom") || type.getName().equals("mail"));
+		user.addLink(link);
+		user.getLinks().add(linkController.save(link));
+	}
+	
+	@PostMapping("/settings/delete")
+	public ModelAndView deleteLinks(HttpServletRequest request) throws AuthUserNotFoundException {
+		Map<String, String[]> params = request.getParameterMap();
+		User user = userController.getAuthUser();
+		for(Entry<String, String[]> param : params.entrySet()) {
+			if(param.getValue() != null && user.hasLink(param.getKey())) {
+				for(Link link : user.getLinks(linkController.getTypeByName(param.getKey()))) {
+					linkController.delete(link);
+				}
+			}
+		}
+		return new ModelAndView("redirect:../");
 	}
 	
 	@GetMapping("/settings")
@@ -193,12 +230,17 @@ public class ViewController {
 	}
 
 	@GetMapping("/recovery")
-	public ModelAndView showRecoveryGenerate(Device device) throws IOException {
+	public ModelAndView showRecoveryGenerate(Device device, 
+			@RequestParam(required=false) Boolean error,
+			@RequestParam(required=false) String login) throws IOException {
 		User user = userController.getAuthUser();
 		return new ModelAndViewBuilder(device, user)
 				.page()
 					.title("")
 					.path("recovery/generate")
+					.data("error", error != null ? login == null ? 
+							RECOVERY_NO_MAIL_ERROR : String.format(RECOVERY_NO_USER_ERROR, login)
+							: null)
 					.and()
 				.title("Восстановить пароль")
 				.data("pageName", "recoveryGenerate")
@@ -208,18 +250,36 @@ public class ViewController {
 	@PostMapping("/recovery")
 	public ModelAndView generateRecoveryCode(Device device, @RequestParam String email) 
 			throws UserNotFoundException, AccessException {
-		User user = userController.get(email);
+		User user;
+		try {
+			user = userController.get(email);			
+		} catch(UserNotFoundException e) {
+			return new ModelAndView("redirect:/recovery?error=true&login="+email);			
+		}
 		if(user.getEmail() == null) {
-			String error = "У пользователя не указана электронная почта";
-			return new ModelAndView("redirect:/recovery?error="+error);
+			return new ModelAndView("redirect:/recovery?error=true");
 		}
 		RecoveryCode recoveryCode = recoveryController.generate(user.getLogin());
 		mailUtils.sendMail(user.getEmail(), "Восстановление пароля", 
 				  "На ваш аккаунт поступил запрос на восстановление пароля. \n"
 				+ "Ссылка для восстановления пароля: "
-						  +"https://loof.com/recovery/"+recoveryCode.getCode()+"\n"
+						  +"https://loofme.site/recovery/"+recoveryCode.getCode()+"\n"
+				+ "<i>Ни в коем случае не передавайте эту ссылку третьим лицам</i>,"
+				+ " это грозит утратой аккаунта \n"
 				+ "Если вы не запрашивали восстановление пароля- игнорируйте это сообщение");
-		return new ModelAndView("redirect:/");
+		return new ModelAndView("redirect:/recovery/message");
+	}
+	
+	@GetMapping("/recovery/message")
+	public ModelAndView showRecoveryMessage(Device device) 
+			throws AuthUserNotFoundException, IOException {
+		return new ModelAndViewBuilder(device, userController.getAuthUser())
+				.page()
+					.title("")
+					.path("/recovery/message")
+					.and()
+				.build();
+		
 	}
 	
 	@GetMapping("/recovery/{code}")
@@ -249,7 +309,7 @@ public class ViewController {
 				.page()
 					.title("")
 					.path("/user/info")
-					.data("links", user.getLinks())
+					.data("links", user.getLinks(), "user", user)
 					.and()
 				.title(user.getName())
 				.build();
@@ -276,6 +336,9 @@ public class ViewController {
 	@PostMapping("/delete")
 	public ModelAndView delete() 
 			throws AuthUserNotFoundException, UserNotFoundException, AccessException {
+		if(UserController.isAuthAdmin()) {
+			throw new AccessException("Аккаунт админа не может быть удален");
+		}
 		userController.removeUser(userController.getAuthUser());
 		return new ModelAndView("redirect:/logout");
 	}
