@@ -97,6 +97,7 @@ public class UserController {
 		user.setEmail(email);
 		user.setPassword(passwordEncoder.encode(password));
 		user = userRepository.save(user);
+		code.setUser(user);
 		codeController.save(code);
 		return user;
 	}
@@ -113,7 +114,7 @@ public class UserController {
 		}
 		String login = optionalLogin.get();
 		User user = get(login);
-		codeController.delete(user.getCode());
+		codeController.delete(codeController.getByUser(user));
 		userRepository.delete(user);
 	}
 	
@@ -148,6 +149,15 @@ public class UserController {
 	
 	public static String getAuthLogin() {
 		return SecurityContextHolder.getContext().getAuthentication().getName();
+	}
+
+	public User getByCode(String id) {
+		for(Code code : codeController.listCodes()) {
+			if(code.getId().equals(id)) {
+				return code.getUser();
+			}
+		}
+		return null;
 	}
 
 }

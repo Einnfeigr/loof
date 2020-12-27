@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.einnfeigr.taskApp.exception.controller.AccessException;
 import com.einnfeigr.taskApp.misc.Util;
 import com.einnfeigr.taskApp.pojo.Code;
+import com.einnfeigr.taskApp.pojo.User;
 import com.einnfeigr.taskApp.repository.IdRepository;
 
 @RestController()
@@ -56,7 +57,7 @@ public class CodeController {
 	public boolean isCorrect(String id) {
 		for(Code code : listCodes()) {
 			if(code.getId().equals(id)) {
-				return code.getNfc() != null && !code.getNfc().equals("");
+				return code.getNfc() != null && !code.getNfc().equals("") && code.getUser() != null;
 			}
 		}
 		return false;
@@ -74,6 +75,10 @@ public class CodeController {
 	
 	public Code save(Code code) {
 		return idRepo.save(code);
+	}
+
+	public Code getByUser(User user) {
+		return idRepo.getByUser(user);
 	}
 	
 }

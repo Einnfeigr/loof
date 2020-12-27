@@ -59,7 +59,9 @@ public class ViewController {
 	
 	@GetMapping("/codes")
 	public ModelAndView showCodesPage(Device device) throws AuthUserNotFoundException, IOException {
-		return new ModelAndViewBuilder(device, userController.getAuthUser())
+		User auth = userController.getAuthUser();
+		log.info(auth.getLogin()+" requested codes list");
+		return new ModelAndViewBuilder(device, auth)
 				.page()
 					.title("Список кодов регистрации")
 					.data("codes", codeController.listCodes())
@@ -71,7 +73,8 @@ public class ViewController {
 	
 	@PostMapping("/codes")
 	public ModelAndView updateCodes(@RequestParam List<String> ids, 
-			@RequestParam List<String> nfcs) {
+			@RequestParam List<String> nfcs) throws AuthUserNotFoundException {
+		log.info(userController.getAuthUser().getLogin()+" updated codes");
 		for(int x = 0; x < ids.size(); x++) {
 			codeController.update(ids.get(x), nfcs.get(x));
 		}
@@ -95,8 +98,15 @@ public class ViewController {
 			throws AuthUserNotFoundException, IOException {
 		Code regCode = codeController.get(code);
 		Boolean isCorrect = code != null && !code.equals("") && codeController.isCorrect(code);
-		if(regCode != null && regCode.getNfc() == null) { 
-			log.warn("Code "+regCode.getId()+" don't have mapped nfc");
+		if(regCode != null) {
+			if(regCode.getNfc() == null) { 
+				log.warn("Code \'"+regCode.getId()+"\' don't have mapped nfc");
+			}
+			if(regCode.getUser() != null) {
+				log.warn("Someone requested registration on \'"+regCode.getId()
+					+"\' which is already mapped on user with login\'"
+						+regCode.getUser().getLogin()+"\'");
+			}
 		}
 		return new ModelAndViewBuilder(device, userController.getAuthUser())
 				.page()
@@ -118,14 +128,17 @@ public class ViewController {
 			throw new AccessException("Идентификатор не найден");
 		}
 		userController.addUser(id, login, password, name, email);
+		log.info("User has registered with login \'"+login+"\' and code \'"+id+"\'");
 		return new ModelAndView("redirect:/login");
 	}	
 	
 	@GetMapping("/users")
 	public ModelAndView showUsers(Device device) throws IOException, 
 			AccessException {
+		User auth = userController.getAuthUser();
+		log.info(auth.getLogin()+" requested users list");
 		List<User> users = userController.getAll();
-		return new ModelAndViewBuilder(device, userController.getAuthUser())
+		return new ModelAndViewBuilder(device, auth)
 				.title("Список пользователей")
 				.page()
 					.path("templates/users")
@@ -139,9 +152,8 @@ public class ViewController {
 	public ModelAndView showMain(Device device,
 			@RequestParam(value="date", required=false) String dateText) 
 					throws IOException {
-		
 		User user = userController.getAuthUser();
-		return new ModelAndViewBuilder(device, userController.getAuthUser()) 
+		return new ModelAndViewBuilder(device, user) 
 				.page()
 					.path("templates/main")
 					.data("isMe", user != null, "user", user, 
@@ -254,11 +266,15 @@ public class ViewController {
 		try {
 			user = userController.get(email);			
 		} catch(UserNotFoundException e) {
+			log.warn("Recovery code has been requested for invalid user \'"+email+"\'");
 			return new ModelAndView("redirect:/recovery?error=true&login="+email);			
 		}
 		if(user.getEmail() == null) {
+			log.warn("Recovery code has been requested for user \'"
+					+user.getLogin()+"\' with no mail");
 			return new ModelAndView("redirect:/recovery?error=true");
 		}
+		log.info("Recovery code has been requested for user \'"+user.getLogin()+"\'");
 		RecoveryCode recoveryCode = recoveryController.generate(user.getLogin());
 		mailUtils.sendMail(user.getEmail(), "Восстановление пароля", 
 				  "На ваш аккаунт поступил запрос на восстановление пароля. \n"
@@ -298,13 +314,24 @@ public class ViewController {
 	public ModelAndView recoverByCode(@PathVariable String code, @RequestParam String password) 
 			throws UserNotFoundException, AccessException {
 		recoveryController.consume(code, password);
+		log.info("Recovery code \'"+code+"\' has been consumed");
 		return new ModelAndView("redirect:/login");
 	}
 	
-	@GetMapping("/users/{login}")
-	public ModelAndView viewUserInfo(Device device, @PathVariable String login) 
+	@GetMapping("/u/{login}")
+	public ModelAndView viewUserInfoByLogin(Device device, @PathVariable String login) 
 			  throws AuthUserNotFoundException, IOException, AccessException {
-		User user = userController.get(login);
+		return showUserInfo(device, userController.get(login));
+	}
+	
+	@GetMapping("/user/{code}")
+	public ModelAndView viewUserInfoById(Device device, @PathVariable String code) 
+			throws AuthUserNotFoundException, IOException, AccessException {
+		return showUserInfo(device, userController.getByCode(code));
+	}
+	
+	private ModelAndView showUserInfo(Device device, User user) 
+			throws AuthUserNotFoundException, IOException {
 		return new ModelAndViewBuilder(device, userController.getAuthUser()) 
 				.page()
 					.title("")
@@ -330,6 +357,7 @@ public class ViewController {
 	public ModelAndView generateId(@RequestParam(required=false) Integer count) 
 			throws AccessException {
 		codeController.generateCodes(count);
+		log.info(count+" ids has been generated by user \'"+UserController.getAuthLogin()+"\'");
 		return new ModelAndView("redirect:/id/generate");
 	}
 	
@@ -339,7 +367,9 @@ public class ViewController {
 		if(UserController.isAuthAdmin()) {
 			throw new AccessException("Аккаунт админа не может быть удален");
 		}
-		userController.removeUser(userController.getAuthUser());
+		User auth = userController.getAuthUser();
+		log.info("User \'"+auth.getLogin()+"\' is deleting account");
+		userController.removeUser(auth);
 		return new ModelAndView("redirect:/logout");
 	}
 	
