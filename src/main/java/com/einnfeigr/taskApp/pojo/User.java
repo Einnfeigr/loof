@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,7 +44,8 @@ public class User implements Cloneable {
     @OneToOne(mappedBy="user")
     private RecoveryCode recoveryCode;
     
-    @OneToMany(mappedBy="user", cascade=CascadeType.REMOVE)
+    
+    @OneToMany(mappedBy="user", cascade=CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Link> links = new ArrayList<>();
     
     @OneToOne(mappedBy="user")
