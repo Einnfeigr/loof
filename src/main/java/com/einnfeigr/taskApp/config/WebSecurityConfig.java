@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -57,6 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationFailureHandler authenticationFailureHandler() {
         return new LoginFailureHandler();
     }
+   
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -66,8 +68,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/", "/css/*", "/js/*", "/img/*", "/img/icon/*", "/fonts/*", "/register",
             		"/login", "/recovery", "/recovery/*")
             	.permitAll()
-            .antMatchers("/users", "/codes", "/id/generate/", "id/generate", "/api/*")
-            	.hasRole("ADMIN")
             .anyRequest().authenticated()
             .and()
             .formLogin()
@@ -112,7 +112,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         	.inMemoryAuthentication()
         	.withUser(ADMIN_LOGIN)
         	.password(password)
-        	.roles("USER", "ADMIN");
+        	.roles("ADMIN")
+        	.authorities("ADMIN");
 	}
 	
 	private void saveAdminUser(String password) {
