@@ -170,17 +170,32 @@ input, select {
 }
 
 input {
+	font-family: comfortaa;
 	border-radius: 3.5px;
 }
 
-input[type=text], input[type=password], input[type=email] {
+input[type=text], input[type=number], input[type=password], input[type=email] {
 	min-width: 35em;
 	min-height: 3em;
 	border: 1px solid rgba(0,0,0,0.35);
 }
 
 input[type=checkbox] {
-	min-width: auto;
+	display: none;
+}
+
+.checkboxLabel {
+	position: relative;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	border: 2px solid rgba(0,0,0,0);
+	border-radius: 1em;
+}
+
+input[type=checkbox]:checked + .checkboxLabel {
+	border: 2px dotted rgba(0,0,0,0.5);
 }
 
 input[type=select] {
@@ -188,9 +203,9 @@ input[type=select] {
 }
 
 input[type=submit], button {
+	font-size: 1rem;
 	color: white;
 	font-weight: semibold;
-	font-size: 1.2em;
 	padding: 10px 20px;
 	border-radius: 2.5em;
 	border: none;
@@ -218,6 +233,8 @@ input[type=submit], button {
 
 .error {
 	font-style: italic;
+	color: rgba(0,0,0,0.35);
+	font-size: 0.85em;
 }
 
 a {
@@ -247,8 +264,13 @@ form > span img {
 	margin-right: 0.25em;
 }
 
+.loginForm .submit {
+	flex: 0 0 auto;
+}
 
 .loginForm a {
+	margin: auto;
+	flex: 0 0 auto;
 	margin-left: 2em;
 	text-decoration: none;
 	border-bottom: 1px dotted black;
@@ -288,7 +310,7 @@ textarea {
 	top: 0;
 }
 
-.edEnabled, .edDisabled, .edHiddenElement {
+.edEnabled, .edDisabled, .edHiddenElement, .checkboxLabel {
 	-webkit-transition: all ease-in 0.15s;
     -moz-transition: all ease-in 0.15s;
     -o-transition: all ease-in 0.15s;
@@ -405,19 +427,26 @@ textarea {
 	margin-bottom: 1em;
 }
 
+.userinfo .button, .manage .button {
+	margin: 0.25em;
+}
+
 .button {
 	border: 2px solid black;
 	border-radius: 2em;
 	padding: 0.7em;
 	text-decoration: none;
 	transition: all 0.2s ease-in;
-	margin: 0.5em;
+	text-align: center;
+	font-weight: normal;
+	font-size: 1rem;
 }
 
 input[type=submit].button, button.button {
 	background: white;
-	border: 1px solid black;
+	border: 2px solid black;
 	color: black;
+	font-size: 1rem;
 }
 
 .userinfo .link {
@@ -443,7 +472,8 @@ input[type=submit].button, button.button {
 	display: flex;
 	justify-items: center;
 	align-items: center;
-	padding-right: 1em;
+	margin-right: 0.75em;
+	padding: 0.25em;
 }
 
 .codes input[type=text] {
@@ -453,7 +483,21 @@ input[type=submit].button, button.button {
 }
 
 .buttons {
+	width: 100%;
 	margin-top: 1.5em;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.userinfo .buttons {
+	width: auto;
+	flex-flow: column;
+}
+
+.buttons * {
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	flex: 2 2 auto;
 }
 
 .users td {

@@ -31,7 +31,7 @@ public class SecurityController {
 			Map<String, Object> data = new HashMap<>();
 			if(error != null) {
 				data.put("isError", "true");
-				data.put("error", error);
+				data.put("error", error.equals("true") ? "Неверный логин или пароль" : error);
 			}
 			return new ModelAndViewBuilder(device, null)
 					.title("Войти")

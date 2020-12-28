@@ -57,7 +57,7 @@ public class CodeController {
 	public boolean isCorrect(String id) {
 		for(Code code : listCodes()) {
 			if(code.getId().equals(id)) {
-				return code.getNfc() != null && !code.getNfc().equals("") && code.getUser() != null;
+				return code.getNfc() != null && !code.getNfc().equals("") && code.getUser() == null;
 			}
 		}
 		return false;

@@ -22,8 +22,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 			HttpServletResponse response,
 			AuthenticationException exception) 
 			throws IOException, ServletException {
-		logger.info(exception.getMessage());
-        response.sendRedirect("/login?error="+exception.getMessage());
+        response.sendRedirect("/login?error=true");
 	}
 
 }

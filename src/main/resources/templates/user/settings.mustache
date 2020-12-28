@@ -5,9 +5,11 @@
 </form>
 {{#links}}
 	<div class="link">
-		<input type="checkbox" form="delete" name="{{type.name}}" />
-		<div class="imgwrapper">
-			{{#type}}{{>../misc/linkicon}}{{/type}}
+		<div>
+			<input type="checkbox" form="delete" id="{{type.name}}.checkbox" name="{{type.name}}" />
+			<label class="imgwrapper checkboxLabel" for="{{type.name}}.checkbox">
+				{{#type}}{{>../misc/linkicon}}{{/type}}
+			</label>
 		</div>
 		<input type="text" form="save" name="{{type.name}}" 
 				placeholder=
@@ -15,11 +17,8 @@
 				value="{{link}}" />
 	</div>
 {{/links}}
-<hr>
-{{#custom}}
-
-{{/custom}}
 <div class="buttons">
-	<input type="submit" form="save" value="Сохранить" />
+	<a class="button" href="/">Назад</a>
 	<input type="submit" form="delete" value="Удалить выбранное" class="button" />
+	<input type="submit" form="save" value="Сохранить" />
 </div>
