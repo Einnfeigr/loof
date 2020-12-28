@@ -267,9 +267,12 @@ textarea {
 }
 
 .content {
-	overflow: hidden;
 	z-index: 2;
 	padding: 5px;
+}
+
+.content.main {
+	overflow: hidden;
 }
 
 .previewBackground {

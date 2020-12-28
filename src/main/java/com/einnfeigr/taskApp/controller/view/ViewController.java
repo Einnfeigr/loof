@@ -62,7 +62,7 @@ public class ViewController {
 			throws AuthUserNotFoundException, IOException, AccessException {
 		User auth = userController.getAuthUser();
 		log.info(auth.getLogin()+" requested codes list");
-		if(auth.getLogin() != WebSecurityConfig.ADMIN_LOGIN) {
+		if(!auth.getLogin().equals(WebSecurityConfig.ADMIN_LOGIN)) {
 			throw new AccessException();
 		}
 		return new ModelAndViewBuilder(device, auth)
@@ -79,7 +79,7 @@ public class ViewController {
 	public ModelAndView updateCodes(@RequestParam List<String> ids, 
 			@RequestParam List<String> nfcs) throws AuthUserNotFoundException, AccessException {
 		User auth = userController.getAuthUser();
-		if(auth.getLogin() != WebSecurityConfig.ADMIN_LOGIN) {
+		if(!auth.getLogin().equals(WebSecurityConfig.ADMIN_LOGIN)) {
 			log.info(auth.getLogin()+" tried to update codes");
 			throw new AccessException();
 		}
@@ -94,7 +94,7 @@ public class ViewController {
 	public ModelAndView showManagePage(Device device)
 			throws AuthUserNotFoundException, IOException, AccessException {
 		User auth = userController.getAuthUser();
-		if(auth.getLogin() != WebSecurityConfig.ADMIN_LOGIN) {
+		if(!auth.getLogin().equals(WebSecurityConfig.ADMIN_LOGIN)) {
 			log.info(auth.getLogin()+" tried to get manage page");
 			throw new AccessException();
 		}
@@ -151,7 +151,7 @@ public class ViewController {
 			AccessException {
 		User auth = userController.getAuthUser();
 		log.info(auth.getLogin()+" requested users list");
-		if(auth.getLogin() != WebSecurityConfig.ADMIN_LOGIN) {
+		if(!auth.getLogin().equals(WebSecurityConfig.ADMIN_LOGIN)) {
 			throw new AccessException();
 		}
 		List<User> users = userController.getAll();
@@ -362,7 +362,7 @@ public class ViewController {
 	public ModelAndView showGenerateIdPage(Device device) 
 			throws AuthUserNotFoundException, IOException, AccessException {
 		User auth = userController.getAuthUser();
-		if(auth.getLogin() != WebSecurityConfig.ADMIN_LOGIN) {
+		if(!auth.getLogin().equals(WebSecurityConfig.ADMIN_LOGIN)) {
 			log.info(auth.getLogin()+" tried to get manage page");
 			throw new AccessException();
 		}
@@ -378,7 +378,7 @@ public class ViewController {
 	public ModelAndView generateId(@RequestParam(required=false) Integer count) 
 			throws AccessException, AuthUserNotFoundException {
 		User auth = userController.getAuthUser();
-		if(auth.getLogin() != WebSecurityConfig.ADMIN_LOGIN) {
+		if(!auth.getLogin().equals(WebSecurityConfig.ADMIN_LOGIN)) {
 			log.info(auth.getLogin()+" tried to get manage page");
 			throw new AccessException();
 		}
@@ -390,10 +390,10 @@ public class ViewController {
 	@PostMapping("/delete")
 	public ModelAndView delete() 
 			throws AuthUserNotFoundException, UserNotFoundException, AccessException {
-		if(UserController.isAuthAdmin()) {
+		User auth = userController.getAuthUser();
+		if(auth.getLogin().equals(WebSecurityConfig.ADMIN_LOGIN)) {
 			throw new AccessException("Аккаунт админа не может быть удален");
 		}
-		User auth = userController.getAuthUser();
 		log.info("User \'"+auth.getLogin()+"\' is deleting account");
 		userController.removeUser(auth);
 		return new ModelAndView("redirect:/logout");
