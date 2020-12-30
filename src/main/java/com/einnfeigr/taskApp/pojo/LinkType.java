@@ -1,5 +1,6 @@
 package com.einnfeigr.taskApp.pojo;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,6 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="link_types")
+@Cacheable
 public class LinkType implements Comparable<LinkType> {
 
 	@Id

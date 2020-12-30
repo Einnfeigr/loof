@@ -11,10 +11,7 @@
 				{{#type}}{{>../misc/linkicon}}{{/type}}
 			</label>
 		</div>
-		<input type="text" form="save" name="{{type.name}}" 
-				placeholder=
-						"{{^isCustom}}{{^type.domain}}{{type.name}}{{/type.domain}}{{/isCustom}}{{#isCustom}}{{type.name}}{{/isCustom}}{{^isCustom}}{{#type.domain}}https://{{type.domain}}/{{/type.domain}}{{/isCustom}}"
-				value="{{link}}" />
+		<input type="text" form="save" name="{{type.name}}" placeholder="{{type.name}}" value="{{link}}" />
 	</div>
 {{/links}}
 <div class="buttons">

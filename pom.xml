@@ -19,7 +19,23 @@
 		<java.version>8</java.version>
 	</properties>
 
+	<dependencyManagement>
+	  <dependencies>
+	    <dependency>
+	      <groupId>org.springframework.session</groupId>
+	      <artifactId>spring-session-bom</artifactId>
+	      <version>Corn-SR2</version>
+	      <type>pom</type>
+	      <scope>import</scope>
+	    </dependency>
+	  </dependencies>
+	</dependencyManagement>
+
 	<dependencies>
+	  	<dependency>
+	    	<groupId>org.springframework.session</groupId>
+	    	<artifactId>spring-session-hazelcast</artifactId>
+	  	</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -46,6 +62,10 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-jdbc</artifactId>
 		</dependency>
@@ -64,6 +84,10 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<artifactId>hibernate-ehcache</artifactId>
+			<groupId>org.hibernate</groupId>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

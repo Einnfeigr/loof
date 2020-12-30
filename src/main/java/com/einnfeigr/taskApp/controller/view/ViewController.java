@@ -287,7 +287,7 @@ public class ViewController {
 	public ModelAndView showSettingsPage(Device device) 
 			throws AuthUserNotFoundException, IOException {
 		User user = userController.getAuthUser();
-		return new ModelAndViewBuilder(device, userController.getAuthUser())
+		return new ModelAndViewBuilder(device, user)
 				.page()
 					.title("")
 					.path("user/settings")
