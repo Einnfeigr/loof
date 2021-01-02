@@ -2,6 +2,7 @@ package com.einnfeigr.taskApp.repository;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,22 @@ import com.einnfeigr.taskApp.pojo.LinkType;
 import com.einnfeigr.taskApp.pojo.User;
 
 public interface LinkRepository extends JpaRepository<Link, Long>{
+	
+	@Override
+	@CacheEvict("links")
+	<S extends Link> List<S> saveAll(Iterable<S> entities);
+	
+	@Override
+	@CacheEvict("links")
+	<S extends Link> S save(S entity);
+	
+	@Override
+	@CacheEvict("links")
+	void delete(Link link);
+	
+	@Override
+	@CacheEvict("links")
+	void deleteAll();
 	
 	@Query(value="SELECT links.id, links.title, links.link, links.is_custom,\r\n" + 
 			" users.name, users.login, users.email,\r\n" + 

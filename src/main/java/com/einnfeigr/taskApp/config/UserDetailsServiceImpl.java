@@ -29,13 +29,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String name) 
-    		throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         User user = null;
+        name = name.toLowerCase();
 		try {
 			user = userController.get(name);
 		} catch (UserNotFoundException | AccessException e) {
-			logger.error(Util.EXCEPTION_LOG_MESSAGE, e);
+			logger.error(Util.EXCEPTION_LOG_MESSAGE+" username is \'"+name+"\'", e);
 		}
         if(user == null) {
         	throw new UsernameNotFoundException(name+" cannot be found");

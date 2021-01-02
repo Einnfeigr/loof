@@ -1,6 +1,6 @@
 input[type=text], input[type=number], input[type=password], input[type=email] {
-	min-width: 75vw;
-	width: auto;
+	min-width: 3vw;
+	width: 100%;
 	max-width: 90vw;
 	border: 1px solid black;
 	border-style: solid; 

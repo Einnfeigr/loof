@@ -1,32 +1,52 @@
 {{#codes.exists}}
 <form method="post" id="codes"></form>
-<table>
-	<tr>
-		<th>
-			Код
-		</th>
-		<th>
-			nfc-тег
-		</th>
-	</tr>
-	{{#codes}}
+<form method="post" id="delete" action="/codes/delete"></form>
+<div class="tablewrapper">
+	<table>
 		<tr>
-			<td>
-				{{id}}
-				<input form="codes" type="hidden" name="ids" value="{{id}}" />
-			</td>
-			<td>
-				<input form="codes" type="text" name="nfcs" value="{{nfc}}" />
-			</td>
+			<th>
+			</th>
+			<th>
+				Код
+			</th>
+			<th>
+				nfc-тег
+			</th>
+			<th>
+				Пользователь
+			</th>
 		</tr>
-	{{/codes}}
-</table>
+		{{#codes}}
+			<tr>
+				<td>
+					{{^user}}
+					<input type="checkbox" name="codes" value="{{id}}" />
+					{{/user}}
+				</td>
+				<td>
+					{{id}}
+					<input form="codes" type="hidden" name="ids" value="{{id}}" />
+				</td>
+				<td>
+					<input form="codes" type="text" name="nfcs" value="{{nfc}}" />
+				</td>
+				<td>
+					<a href="/u/{{user.login}}">{{user.login}}</a>
+				</td>
+			</tr>
+		{{/codes}}
+	</table>
+</div>
 <div class="buttons">
 	<a class="button" href="/manage">Назад</a>
-	<button form="codes" type="submit" >Сохранить</button>
+	<button form="delete" class="button" type="submit">Удалить выбранное</button>
+	<button form="codes" type="submit">Сохранить</button>
 </div>
 {{/codes.exists}}
 {{^codes}}
-	В системе нет ни одного кода
-	<a class="button" href="/codes/add">Генерация кодов</a>
+	В системе отсутствуют коды
+	<div>
+		<a class="button" href="/codes/add">Генерация кодов</a>
+		<a class="button" href="/manage">Назад</a>
+	</div>
 {{/codes}}

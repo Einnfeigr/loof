@@ -180,7 +180,7 @@ input[type=text], input[type=number], input[type=password], input[type=email] {
 	border: 1px solid rgba(0,0,0,0.35);
 }
 
-input[type=checkbox] {
+.usersettings input[type=checkbox] {
 	display: none;
 }
 
@@ -482,8 +482,8 @@ input[type=submit].button, button.button {
 	margin-left: 1.5em;
 }
 
-.buttons {
-	width: 100%;
+.buttons {	
+	width: auto;
 	margin-top: 1.5em;
 	display: flex;
 	flex-wrap: wrap;
@@ -510,4 +510,40 @@ input[type=submit].button, button.button {
 
 .main h1 {
 	font-size: 5.7em;
+}
+
+.buttons.vertical {
+	flex-flow: column;
+}
+
+.buttons.vertical * {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.tablewrapper {
+	overflow: auto;
+	max-height: 80vh;
+	max-width: 100%;
+}
+
+.placeholder {
+	width: 3.75em;
+}
+
+.userdata {
+	display: grid;
+	max-width: 100%;
+	grid-template-columns: auto auto;
+	margin-bottom: 1em;
+}
+
+.userdata * {
+	margin: auto;
+	margin-right: 1em;
+	margin-bottom: 1em;
+}
+
+.settings {
+	max-width: 90vw;
 }

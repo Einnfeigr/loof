@@ -1,21 +1,46 @@
 <h1>Настройки пользователя</h1>
-<form id="save" method="post">
+<form id="links" method="post">
+</form>
+<form id="details" method="post" action="/settings/details">
 </form>
 <form id="delete" method="post" action="/settings/delete">
 </form>
-{{#links}}
-	<div class="link">
-		<div>
-			<input type="checkbox" form="delete" id="{{type.name}}.checkbox" name="{{type.name}}" />
-			<label class="imgwrapper checkboxLabel" for="{{type.name}}.checkbox">
-				{{#type}}{{>../misc/linkicon}}{{/type}}
-			</label>
+<div class="settings">
+	{{#error}}
+		<div class="error">{{error}}</div>
+	{{/error}}
+	<h2>Пользовательская информация</h2>
+	<div class="dataform">
+		<div class="userdata">
+			<label>Имя</label>
+			<input type="text" form="details" name="name" value="{{user.name}}" />
+			<label>Логин</label>
+			<input type="text" form="details" name="login" value="{{user.login}}" />
+			<label>Почта</label>
+			<input type="email" form="details" name="email" value="{{user.email}}" />
+			<label>Пароль</label>
+			<input type="password" form="details" name="password" />
 		</div>
-		<input type="text" form="save" name="{{type.name}}" placeholder="{{type.name}}" value="{{link}}" />
+		<div class="buttons">
+			<input type="submit" form="details" value="Сохранить" />
+		</div>
+		<hr>
 	</div>
-{{/links}}
-<div class="buttons">
-	<a class="button" href="/">Назад</a>
-	<input type="submit" form="delete" value="Удалить выбранное" class="button" />
-	<input type="submit" form="save" value="Сохранить" />
+	<h2>Связь</h2>
+	{{#links}}
+		<div class="link">
+			<div>
+				<input type="checkbox" form="delete" id="{{type.name}}.checkbox" name="{{type.name}}" />
+				<label class="imgwrapper checkboxLabel" for="{{type.name}}.checkbox">
+					{{#type}}{{>../misc/linkicon}}{{/type}}
+				</label>
+			</div>
+			<input type="text" form="links" name="{{type.name}}" placeholder="{{type.name}}" value="{{link}}" />
+		</div>
+	{{/links}}
+	<div class="buttons">
+		<a class="button" href="/">Назад</a>
+		<input type="submit" form="delete" value="Удалить выбранное" class="button" />
+		<input type="submit" form="links" value="Сохранить" />
+	</div>
 </div>
