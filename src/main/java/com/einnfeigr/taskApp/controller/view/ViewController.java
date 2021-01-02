@@ -297,7 +297,9 @@ public class ViewController {
 		if(type.getDomain() != null) {
 			url = url.contains(type.getDomain()) ? url : type.getDomain() + "/" + url;
 		}
-		if(!type.getName().toLowerCase().equals("email")) {
+		String typeName = type.getName().toLowerCase();
+		if(!typeName.equals("email") && !typeName.equals("mobile")
+				&& !typeName.equals("location")) {
 			url = "https://"+url;
 		}
 		Link link = new Link();
