@@ -10,8 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.einnfeigr.taskApp.pojo.LinkType;
 
-@CacheConfig(cacheNames={"linkTypes"})   
-@Cacheable
 public interface LinkTypeRepository extends JpaRepository<LinkType, Long> {
 
 	@Override
@@ -34,11 +32,9 @@ public interface LinkTypeRepository extends JpaRepository<LinkType, Long> {
 			"	FROM link_types\r\n" + 
 			"    ORDER BY priority",
 			nativeQuery=true)
-	@Cacheable(value="linkTypesCache")
 	@Override
 	List<LinkType> findAll();
 	
-	@Cacheable("linkTypesCache")
 	LinkType getByName(String name);
 	
 }

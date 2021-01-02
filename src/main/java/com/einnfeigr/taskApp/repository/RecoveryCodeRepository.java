@@ -7,7 +7,6 @@ import com.einnfeigr.taskApp.pojo.RecoveryCode;
 
 public interface RecoveryCodeRepository extends JpaRepository<RecoveryCode, String> {
 	
-	@Cacheable("recovery_codes")
 	RecoveryCode findByCode(String code);
 	
 }

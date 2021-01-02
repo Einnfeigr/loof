@@ -8,7 +8,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="link_types")
-@Cacheable
 public class LinkType implements Comparable<LinkType> {
 
 	@Id

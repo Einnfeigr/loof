@@ -39,7 +39,6 @@ public interface LinkRepository extends JpaRepository<Link, Long>{
 			"		ON links.type_id = link_types.id",
 			nativeQuery=true)
 	@Override
-	@Cacheable("links")
 	List<Link> findAll(); 
 	
 	@Query(value="SELECT links.id, links.title, links.link, links.is_custom,\r\n" + 
@@ -52,9 +51,7 @@ public interface LinkRepository extends JpaRepository<Link, Long>{
 			"		ON links.type_id = link_types.id"
 			+ "	WHERE user_id = ?1.id",
 			nativeQuery=true)
-	@Cacheable("links")
 	Link findByUser(User user);
 	
-	@Cacheable("links")
 	void deleteByType(LinkType type);
 }

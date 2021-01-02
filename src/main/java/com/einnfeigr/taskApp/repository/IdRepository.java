@@ -36,7 +36,6 @@ public interface IdRepository extends JpaRepository<Code, Long> {
 			+ " ON ids.user_id = users.id",
 			nativeQuery=true)
 	@Override
-	@Cacheable("ids")
 	List<Code> findAll();
 	
 	@Query(value="SELECT ids.id, ids.user_id, ids.nfc, "
@@ -46,7 +45,6 @@ public interface IdRepository extends JpaRepository<Code, Long> {
 			+ " ON ids.user_id = users.id"
 			+ " WHERE ids.id = ?1",
 			nativeQuery=true)
-	@Cacheable("ids")
 	Code findById(String id);
 
 	@Query(value="SELECT ids.id, ids.user_id, ids.nfc, "
@@ -56,7 +54,6 @@ public interface IdRepository extends JpaRepository<Code, Long> {
 			+ " ON ids.user_id = users.id"
 			+ " WHERE ids.user_id = ?1.id",
 			nativeQuery=true)
-	@Cacheable("ids")
 	Code getByUser(User user);
 	
 }
