@@ -302,6 +302,10 @@ public class ViewController {
 				&& !typeName.equals("location")) {
 			url = "https://"+url;
 		}
+		if(typeName.equals("location")) {
+			url = String.format("http://maps.google.com/?ie=UTF8&hq=&ll=%s&z=13",
+					url);
+		}
 		Link link = new Link();
 		link.setLink(url);
 		link.setType(type);
@@ -442,6 +446,15 @@ public class ViewController {
 	
 	private ModelAndView showUserInfo(Device device, User user) 
 			throws AuthUserNotFoundException, IOException {
+		if(user == null) {
+			return new ModelAndViewBuilder(device, userController.getAuthUser())
+					.page()
+						.title("")
+						.path("/user/notfound")
+						.and()
+					.title("Пользователь не найден")
+					.build();
+		}
 		return new ModelAndViewBuilder(device, userController.getAuthUser()) 
 				.page()
 					.title("")
@@ -456,12 +469,12 @@ public class ViewController {
 	public ModelAndView deleteCodes(@RequestParam List<String> codes) {
 		for(String id : codes) {
 			Code code = codeController.get(id);
-			if(code.getUser() == null) {
+			if(code.getUser() != null) {
 				continue;
 			}
 			codeController.delete(code);
 		}
-		return new ModelAndView("redirect:/");
+		return new ModelAndView("redirect:/codes/");
 	}
 	
 	@GetMapping("/codes/generate")
