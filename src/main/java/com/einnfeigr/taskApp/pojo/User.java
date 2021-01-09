@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,9 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -109,12 +105,27 @@ public class User implements Cloneable {
 	
 	public List<Link> getLinks(List<LinkType> types) {
 		List<Link> links = this.links.stream().sorted().collect(Collectors.toList());
+		links.forEach(l -> {
+			if(l.getType().getName().toLowerCase().equals("location")) {
+				l.setLink(l.getLink().replace("http://maps.google.com/?ie=UTF8&hq=&ll=", "")
+						.replace("&z=13", ""));
+				return;
+			}
+			String domain = l.getType().getDomain();
+			if(domain == null) {
+				return;
+			}
+			l.setLink(l.getLink().replace(domain, ""));
+			if(domain.contains(".")) {
+				l.setLink(l.getLink().replace("https://", "").replaceFirst("/", ""));
+			}
+		});
 		for(LinkType type : types) {
-			if(!hasLink(type) || type.getName().toLowerCase().equals("custom")) {
+			String typeName = type.getName().toLowerCase();
+			if(!hasLink(type) || typeName.equals("custom") || typeName.equals("mobile") 
+					|| typeName.equals("card")) {
 				Link link = new Link();
 				link.setType(type);
-				link.setIsCustom(type.getName().toLowerCase().equals("custom") 
-						|| type.getName().toLowerCase().equals("email"));
 				links.add(link);
 			}
 		}
@@ -188,6 +199,15 @@ public class User implements Cloneable {
 	public boolean hasLinkUrl(String url) {
 		for(Link link : links) {
 			if(link.getLink().equals(url)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasLinkType(String name) {
+		for(Link link : links) {
+			if(link.getType().getName().equals(name)) {
 				return true;
 			}
 		}

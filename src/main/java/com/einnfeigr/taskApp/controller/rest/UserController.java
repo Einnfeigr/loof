@@ -4,11 +4,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -87,8 +93,9 @@ public class UserController {
 			@RequestParam String login,
 			@RequestParam String password,
 			@RequestParam String name,
-			@RequestParam String email) 
-					throws AuthUserNotFoundException, AccessException {
+			@RequestParam String email,
+			HttpServletRequest request) 
+					throws AuthUserNotFoundException, AccessException, ServletException {
 		User user = new User();
 		Code code = codeController.get(id);
 		user.setCode(code);
@@ -99,9 +106,10 @@ public class UserController {
 		user = userRepository.save(user);
 		code.setUser(user);
 		codeController.save(code);
+		request.login(name, password);
 		return user;
 	}
-		
+	
 	public void removeUser(User user) throws UserNotFoundException, AccessException {
 		removeUser(Optional.of(user.getLogin()));
 	}
@@ -127,7 +135,7 @@ public class UserController {
 	}
 	
 	public static boolean isAuthAdmin() {
-		return getAuthLogin().equals(WebSecurityConfig.ADMIN_LOGIN);
+		return WebSecurityConfig.ADMIN_LOGIN.equals(getAuthLogin());
 	}
 	
 	public User getAuthUser() throws AuthUserNotFoundException {

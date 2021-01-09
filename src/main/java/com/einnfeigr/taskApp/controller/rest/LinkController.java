@@ -45,5 +45,9 @@ public class LinkController {
 	public void delete(Link link) {
 		linkRepository.delete(link);
 	}
+
+	public Link get(String url) {
+		return linkRepository.findByUrl(url);
+	}
 	
 }

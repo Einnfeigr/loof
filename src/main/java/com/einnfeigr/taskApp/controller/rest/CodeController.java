@@ -78,7 +78,7 @@ public class CodeController {
 	}
 
 	public Code getByUser(User user) {
-		return idRepo.getByUser(user);
+		return idRepo.getByUser(user.getId());
 	}
 	
 }

@@ -52,8 +52,8 @@ public interface IdRepository extends JpaRepository<Code, Long> {
 			+ " FROM ids"
 			+ " LEFT JOIN users"
 			+ " ON ids.user_id = users.id"
-			+ " WHERE ids.user_id = ?1.id",
+			+ " WHERE ids.user_id = ?1",
 			nativeQuery=true)
-	Code getByUser(User user);
+	Code getByUser(Long id);
 	
 }

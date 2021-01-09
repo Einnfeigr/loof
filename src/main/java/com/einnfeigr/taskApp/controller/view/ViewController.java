@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -91,7 +92,7 @@ public class ViewController {
 		for(int x = 0; x < ids.size(); x++) {
 			codeController.update(ids.get(x), nfcs.get(x));
 		}
-		return new ModelAndView("redirect:/");
+		return new ModelAndView("redirect:/codes");
 	}
 	
 	@GetMapping("/manage")
@@ -161,8 +162,9 @@ public class ViewController {
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String login,
 			@RequestParam(required=false) String password,
-			@RequestParam(required=false) String email)
-					throws AccessException, UserNotFoundException {
+			@RequestParam(required=false) String email,
+			HttpServletRequest request)
+					throws AccessException, UserNotFoundException, ServletException {
 		name = name.trim();
 		login = login.trim().toLowerCase();
 		password = password.trim();
@@ -179,13 +181,17 @@ public class ViewController {
 			if(userController.get(login) != null) {
 				return new ModelAndView("redirect:/register?code="+id+"&error=login");
 			}
+		} catch(UserNotFoundException e) {
+			
+		}
+		try {
 			if(userController.get(email) != null) {
 				return new ModelAndView("redirect:/register?code="+id+"&error=email");				
 			}
 		} catch(UserNotFoundException e) {
 			
 		}
-		userController.addUser(id, login, password, name, email);
+		userController.addUser(id, login, password, name, email, request);
 		log.info("User has registered with login \'"+login+"\' and code \'"+id+"\'");
 		return new ModelAndView("redirect:/login");
 	}	
@@ -214,6 +220,9 @@ public class ViewController {
 			@RequestParam(value="date", required=false) String dateText) 
 					throws IOException {
 		User user = userController.getAuthUser();
+		if(user != null) {
+			return new ModelAndView("redirect:/u/"+user.getLogin());
+		}
 		return new ModelAndViewBuilder(device, user) 
 				.page()
 					.path("templates/main")
@@ -270,13 +279,17 @@ public class ViewController {
 		Map<String, String[]> params = request.getParameterMap();
 		User user = userController.getAuthUser();
 		List<String> linkNames = linkController.getNames();
-		for(Entry<String, String[]> param : params.entrySet()) {
-			if(param.getValue() != null && linkNames.contains(param.getKey())) {
-				LinkType type = linkController.getTypeByName(param.getKey());
-				for(String url : param.getValue()) {
-					generateLink(user, type, url);
+		try {
+			for(Entry<String, String[]> param : params.entrySet()) {
+				if(param.getValue() != null && linkNames.contains(param.getKey())) {
+					LinkType type = linkController.getTypeByName(param.getKey());
+					for(String url : param.getValue()) {
+						generateLink(user, type, url);
+					}
 				}
 			}
+		} catch(IllegalArgumentException e) {
+			return new ModelAndView("settings:/settings?error=true&type="+e.getMessage());
 		}
 		return new ModelAndView("redirect:/");
 	}
@@ -285,33 +298,40 @@ public class ViewController {
 		if(url == null || url.equals("")) {
 			return;
 		}
-		if(user.hasLinkUrl(url)) {
-			return;
-		}
-		if(!type.getName().toLowerCase().equals("custom") && user.hasLink(type)) {
-			for(Link uLink : user.getLinks(type)) {
-				linkController.delete(uLink);
-			}
-		}
-		url = url.replace("http://", "").replace("https://", "");
-		if(type.getDomain() != null) {
-			url = url.contains(type.getDomain()) ? url : type.getDomain() + "/" + url;
-		}
 		String typeName = type.getName().toLowerCase();
-		if(!typeName.equals("email") && !typeName.equals("mobile")
-				&& !typeName.equals("location")) {
-			url = "https://"+url;
+		url = url.replace("http://", "").replace("https://", "");
+		String domain = type.getDomain();
+		if(domain != null) {
+			domain = domain.contains(".") || domain.startsWith("/") ? domain += "/" : domain;
+			url = url.contains(type.getDomain()) ? url : domain + url;
+		}
+		if(!typeName.equals("email") && !typeName.equals("mobile") && !typeName.equals("location")
+				&& !typeName.equals("card")
+				&& !url.startsWith("@") && url.contains(".") && url.contains("/") 
+				&& !domain.startsWith("/")) {
+			url ="https://"+url;
 		}
 		if(typeName.equals("location")) {
 			url = String.format("http://maps.google.com/?ie=UTF8&hq=&ll=%s&z=13",
 					url);
+		}
+		if(user.hasLinkUrl(url)) {
+			return;
+		}
+		if(!typeName.equals("custom") && !typeName.equals("mobile") && !typeName.equals("card")
+				&& user.hasLink(type)) {
+			for(Link uLink : user.getLinks(type)) {
+				linkController.delete(uLink);
+			}
+		}
+		if(linkController.get(url) != null) {
+			throw new IllegalArgumentException(typeName);
 		}
 		Link link = new Link();
 		link.setLink(url);
 		link.setType(type);
 		link.setUser(user);
 		link.setTitle(type.getName());
-		link.setIsCustom(type.getName().equals("custom") || type.getName().equals("mail"));
 		user.addLink(link);
 		user.getLinks().add(linkController.save(link));
 	}
@@ -321,9 +341,13 @@ public class ViewController {
 		Map<String, String[]> params = request.getParameterMap();
 		User user = userController.getAuthUser();
 		for(Entry<String, String[]> param : params.entrySet()) {
-			if(param.getValue() != null && user.hasLink(param.getKey())) {
+			if(param.getValue() != null && user.hasLinkType(param.getKey())) {
 				for(Link link : user.getLinks(linkController.getTypeByName(param.getKey()))) {
-					linkController.delete(link);
+					for(String linkName : param.getValue()) {
+						if(link.getLink().equals(linkName)) {
+							linkController.delete(link);							
+						}
+					}
 				}
 			}
 		}
@@ -331,7 +355,8 @@ public class ViewController {
 	}
 	
 	@GetMapping("/settings")
-	public ModelAndView showSettingsPage(Device device, @RequestParam(required=false) String error) 
+	public ModelAndView showSettingsPage(Device device, @RequestParam(required=false) String error,
+			@RequestParam(required=false) String type) 
 			throws AuthUserNotFoundException, IOException {
 		User user = userController.getAuthUser();
 		String errorMessage = null;
@@ -343,6 +368,9 @@ public class ViewController {
 			case("email"):
 				errorMessage = "Эта электронная почта уже привязана к другому аккаунту";
 				break;
+			case("true"):
+				errorMessage = type == null ? "" : "Значение поля \'"+type+"\' уже привязано к "
+						+ "одному из аккаунтов";
 		}
 		return new ModelAndViewBuilder(device, user)
 				.page()
@@ -395,7 +423,7 @@ public class ViewController {
 				  "На ваш аккаунт поступил запрос на восстановление пароля. \n"
 				+ "Ссылка для восстановления пароля: "
 						  +"https://loofme.site/recovery/"+recoveryCode.getCode()+"\n"
-				+ "<i>Ни в коем случае не передавайте эту ссылку третьим лицам</i>,"
+				+ "Ни в коем случае не передавайте эту ссылку третьим лицам,"
 				+ " это грозит утратой аккаунта \n"
 				+ "Если вы не запрашивали восстановление пароля- игнорируйте это сообщение");
 		return new ModelAndView("redirect:/recovery/message");
@@ -446,8 +474,9 @@ public class ViewController {
 	
 	private ModelAndView showUserInfo(Device device, User user) 
 			throws AuthUserNotFoundException, IOException {
+		User auth = userController.getAuthUser();
 		if(user == null) {
-			return new ModelAndViewBuilder(device, userController.getAuthUser())
+			return new ModelAndViewBuilder(device, auth)
 					.page()
 						.title("")
 						.path("/user/notfound")
@@ -455,13 +484,16 @@ public class ViewController {
 					.title("Пользователь не найден")
 					.build();
 		}
-		return new ModelAndViewBuilder(device, userController.getAuthUser()) 
+		return new ModelAndViewBuilder(device, auth) 
 				.page()
 					.title("")
 					.path("/user/info")
-					.data("links", user.getLinks(), "user", user)
+					.data("links", user.getLinks(), "user", user, 
+							"isAdmin", UserController.isAuthAdmin(),
+							"isMe", auth == null ? false : user.getLogin().equals(auth.getLogin()))
 					.and()
 				.title(user.getName())
+				.data("pageName", "userinfo")
 				.build();
 	}
 	

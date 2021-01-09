@@ -30,8 +30,8 @@
 	{{#links}}
 		<div class="link">
 			<div>
-				<input type="checkbox" form="delete" id="{{type.name}}.checkbox" name="{{type.name}}" />
-				<label class="imgwrapper checkboxLabel" for="{{type.name}}.checkbox">
+				<input type="checkbox" form="delete" id="{{type.name}}{{link}}checkbox" name="{{type.name}}" value="{{link}}"/>
+				<label class="imgwrapper checkboxLabel" for="{{type.name}}{{link}}checkbox">
 					{{#type}}{{>../misc/linkiconsmall}}{{/type}}
 				</label>
 			</div>

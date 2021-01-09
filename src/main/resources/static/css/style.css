@@ -432,7 +432,7 @@ textarea {
 }
 
 .userinfo .link img {
-	width: 7em;
+	width: 5em;
 }
 
 .userinfo .buttons {
@@ -467,7 +467,7 @@ input[type=submit].button, button.button {
 }
 
 .usersettings img {
-	height: 2em;
+	width: 2em;
 }
 
 .usersettings .link {
@@ -486,8 +486,13 @@ input[type=submit].button, button.button {
 
 .codes input[type=text] {
 	min-width: auto;
-	margin-top: 0.5em;
-	margin-left: 1.5em;
+}
+
+.poweredBy {
+	opacity: 0.5;
+	font-style: italic;
+	font-size: 0.8em;
+	margin-top: 1em;
 }
 
 .buttons {	

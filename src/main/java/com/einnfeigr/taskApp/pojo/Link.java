@@ -1,6 +1,5 @@
 package com.einnfeigr.taskApp.pojo;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,9 +30,6 @@ public class Link implements Comparable<Link> {
 	@Column
 	private String link;
 
-	@Column
-	private Boolean isCustom;
-	
 	public int getId() {
 		return id;
 	}
@@ -79,12 +75,4 @@ public class Link implements Comparable<Link> {
 		return this.getType().compareTo(o.getType());
 	}
 
-	public Boolean getIsCustom() {
-		return isCustom;
-	}
-
-	public void setIsCustom(Boolean isCustom) {
-		this.isCustom = isCustom;
-	}
-	
 }

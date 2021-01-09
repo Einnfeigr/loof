@@ -13,19 +13,15 @@ import com.einnfeigr.taskApp.pojo.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Override
-	@CacheEvict("userscache")
 	<S extends User> S save(S entity);
 	
 	@Override
-	@CacheEvict("userscache")
 	<S extends User> List<S> saveAll(Iterable<S> entities);
 	
 	@Override
-	@CacheEvict("userscache")
 	void delete(User entity);
 	
 	@Override
-	@CacheEvict("userscache")
 	void deleteAll();
 	
 	@Query(value="SELECT * FROM users LEFT JOIN links ON links.user_id = users.id"
