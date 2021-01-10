@@ -304,6 +304,8 @@ public class ViewController {
 		if(domain != null) {
 			domain = domain.contains(".") || domain.startsWith("/") ? domain += "/" : domain;
 			url = url.contains(type.getDomain()) ? url : domain + url;
+		} else {
+			domain = "";
 		}
 		if(!typeName.equals("email") && !typeName.equals("mobile") && !typeName.equals("location")
 				&& !typeName.equals("card")
@@ -340,11 +342,12 @@ public class ViewController {
 	public ModelAndView deleteLinks(HttpServletRequest request) throws AuthUserNotFoundException {
 		Map<String, String[]> params = request.getParameterMap();
 		User user = userController.getAuthUser();
+		List<Link> links = user.getLinks(linkController.getAllLinkTypes());
 		for(Entry<String, String[]> param : params.entrySet()) {
 			if(param.getValue() != null && user.hasLinkType(param.getKey())) {
-				for(Link link : user.getLinks(linkController.getTypeByName(param.getKey()))) {
+				for(Link link : links) {
 					for(String linkName : param.getValue()) {
-						if(link.getLink().equals(linkName)) {
+						if(linkName.equals(link.getLink())) {
 							linkController.delete(link);							
 						}
 					}
