@@ -1,13 +1,13 @@
 <h1>{{user.name}}</h1>
 <div class="buttons">
-{{#isAdmin}}
-	<a class="button" href="/manage">Управление</a>
-{{/isAdmin}}
-{{#isMe}}
-	<a class="button" href="/settings">Настройки</a>
-	<a class="button" href="/logout">Выйти</a>
-	<a class="button" href="/delete">Удалить аккаунт</a>
-{{/isMe}}
+	{{#isAdmin}}
+		<a class="button" href="/manage">Управління</a>
+	{{/isAdmin}}
+	{{#isMe}}
+		<a class="button" href="/settings">Налаштування</a>
+		<a class="button" href="/logout">Вийти</a>
+		<a class="button" href="/delete">Видалити акаунт</a>
+	{{/isMe}}
 </div>
 {{#links}}
 	{{>../misc/link}}
@@ -15,10 +15,10 @@
 {{^links}}
 	<p>
 		{{#isMe}}
-			Вы пока что не добавили ссылки 
+			Ви поки що ні додали посилання
 		{{/isMe}}
 		{{^isMe}}
-			Этот пользователь пока что не добавил ссылок
+			Цей користувач поки що не додав посилань
 		{{/isMe}}
 	</p>
 {{/links}}

@@ -4,7 +4,7 @@ package com.einnfeigr.taskApp.exception.controller;
 public class NotFoundException extends ControllerException {
 
 	public NotFoundException() {
-		super("Страница не найдена");
+		super("Сторінка не знайдена");
 	}
 	
 	public NotFoundException(String message) {

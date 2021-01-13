@@ -42,7 +42,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 			throws IOException, ServletException {
 		logger.info("Handler resolved exception", e);
 		String textPath;
-		String title = "Ошибка";
+		String title = "Помилка";
 		if(e instanceof NotFoundException && !(e instanceof UserNotFoundException)) {
 			textPath = "templates/text/ru/notFound";
 			response.setStatus(404);
@@ -56,7 +56,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 		if(e instanceof AuthUserNotFoundException) {
 			request.logout();
 		}
-		String message = e.getLocalizedMessage() == null ? "Ошибка" : e.getLocalizedMessage();
+		String message = e.getLocalizedMessage() == null ? "Помилка" : e.getLocalizedMessage();
 		try {
 			response.setHeader("error_message", URLEncoder.encode(message, "UTF-8"));
 		} catch(Exception ex) {

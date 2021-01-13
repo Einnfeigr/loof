@@ -1,4 +1,4 @@
-<h1>Настройки пользователя</h1>
+<h1>Налаштування користувача</h1>
 <form id="links" method="post">
 </form>
 <form id="details" method="post" action="/settings/details">
@@ -9,24 +9,24 @@
 	{{#error}}
 		<div class="error">{{error}}</div>
 	{{/error}}
-	<h2>Пользовательская информация</h2>
+	<h2>Iнформація користувача</h2>
 	<div class="dataform">
 		<div class="userdata">
-			<label>Имя</label>
+			<label>Iм'я</label>
 			<input type="text" form="details" name="name" value="{{user.name}}" />
-			<label>Логин</label>
+			<label>Логін</label>
 			<input type="text" form="details" name="login" value="{{user.login}}" />
-			<label>Почта</label>
+			<label>Пошта</label>
 			<input type="email" form="details" name="email" value="{{user.email}}" />
 			<label>Пароль</label>
 			<input type="password" form="details" name="password" />
 		</div>
 		<div class="buttons">
-			<input type="submit" form="details" value="Сохранить" />
+			<input type="submit" form="details" value="Зберегти" />
 		</div>
 		<hr>
 	</div>
-	<h2>Связь</h2>
+	<h2>Зв'язок</h2>
 	{{#links}}
 		<div class="link">
 			<div>
@@ -40,7 +40,7 @@
 	{{/links}}
 	<div class="buttons">
 		<a class="button" href="/">Назад</a>
-		<input type="submit" form="delete" value="Удалить выбранное" class="button" />
-		<input type="submit" form="links" value="Сохранить" />
+		<input type="submit" form="delete" value="Видалити вибране" class="button" />
+		<input type="submit" form="links" value="Зберегти" />
 	</div>
 </div>

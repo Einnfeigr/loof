@@ -41,8 +41,8 @@ public class ViewController {
 	
 	private final static Logger log = LoggerFactory.getLogger(ViewController.class);
 	
-	public final static String RECOVERY_NO_MAIL_ERROR = "У пользователя не указан почтовый ящик";
-	public final static String RECOVERY_NO_USER_ERROR = "Пользователь \'%s\' не найден";
+	public final static String RECOVERY_NO_MAIL_ERROR = "У користувача не вказаний поштовий ящик";
+	public final static String RECOVERY_NO_USER_ERROR = "Користувач \'%s\' не знайдений";
 	
 	@Autowired
 	private UserController userController;
@@ -72,7 +72,7 @@ public class ViewController {
 		}
 		return new ModelAndViewBuilder(device, auth)
 				.page()
-					.title("Список кодов регистрации")
+					.title("Список кодів реєстрації")
 					.data("codes", codeController.listCodes())
 					.path("/codes")
 					.and()
@@ -129,31 +129,32 @@ public class ViewController {
 						+regCode.getUser().getLogin()+"\'");
 			}
 		}
-		String invalidMessage = "Введенный код недействителен";
-		String claimedMessage = "На этот %s уже зарегистрирован аккаунт";
+		String invalidMessage = "Введений код недійсний";
+		String claimedMessage = "На %s вже зареєстрований акаунт";
 		String message = !isCorrect ? invalidMessage : null;
 		error = error == null ? "" : error;
 		switch(error) {
 			case("empty"):
-				message = "Вам нужно заполнить все поля формы";
+				message = "Вам потрібно заповнити всі поля форми";
 				break;
 			case("invalid"):
 				message = invalidMessage;
 				break;
 			case("login"):
-				message = String.format(claimedMessage, "логин");
+				message = String.format(claimedMessage, "цей логiн");
 				break;
 			case("email"):
-				message = String.format(claimedMessage, "почтовый ящик");
+				message = String.format(claimedMessage, "цю поштову скриньку");
 				break;
 		}
 		return new ModelAndViewBuilder(device, userController.getAuthUser())
 				.page()
+					.title("")
 					.path("templates/register")
 					.data("id", isCorrect ? code : null,
-							"error", code == null ? null : message
-								)
+							"error", code == null ? null : message)
 					.and()
+				.title("Реєстрація")
 				.build();
 	}
 	
@@ -206,7 +207,7 @@ public class ViewController {
 		}
 		List<User> users = userController.getAll();
 		return new ModelAndViewBuilder(device, auth)
-				.title("Список пользователей")
+				.title("Список користувачів")
 				.page()
 					.path("templates/users")
 					.data("users", users)
@@ -366,14 +367,14 @@ public class ViewController {
 		error = error == null ? "" : error;
 		switch(error) {
 			case("login"):
-				errorMessage = "Этот логин занят";
+				errorMessage = "Цей логін зайнятий";
 				break;
 			case("email"):
-				errorMessage = "Эта электронная почта уже привязана к другому аккаунту";
+				errorMessage = "Ця електронна пошта вже прив'язана до іншого аккаунту";
 				break;
 			case("true"):
-				errorMessage = type == null ? "" : "Значение поля \'"+type+"\' уже привязано к "
-						+ "одному из аккаунтов";
+				errorMessage = type == null ? "" : "Значення поля \'"+type+"\' вже прив'язане"
+						+ " до аккаунту";
 		}
 		return new ModelAndViewBuilder(device, user)
 				.page()
@@ -382,7 +383,7 @@ public class ViewController {
 					.data("user", user, "links", user.getLinks(linkController.getAllLinkTypes()),
 							"error", errorMessage)
 					.and()
-				.title("Настройки пользователя "+user.getName())
+				.title("Налаштування користувача "+user.getName())
 				.data("pageName", "usersettings")
 				.build();
 	}
@@ -400,7 +401,7 @@ public class ViewController {
 							RECOVERY_NO_MAIL_ERROR : String.format(RECOVERY_NO_USER_ERROR, login)
 							: null)
 					.and()
-				.title("Восстановить пароль")
+				.title("Відновити пароль")
 				.data("pageName", "recoveryGenerate")
 				.build();
 	}
@@ -546,7 +547,7 @@ public class ViewController {
 			throws AuthUserNotFoundException, UserNotFoundException, AccessException {
 		User auth = userController.getAuthUser();
 		if(auth.getLogin().equals(WebSecurityConfig.ADMIN_LOGIN)) {
-			throw new AccessException("Аккаунт админа не может быть удален");
+			throw new AccessException("Аккаунт адміна не може бути видалений");
 		}
 		log.info("User \'"+auth.getLogin()+"\' is deleting account");
 		userController.removeUser(auth);

@@ -61,7 +61,6 @@ public class UserController {
 			@RequestParam(required=false) String name,
 			@RequestParam(required=false) String login,
 			@RequestParam(required=false) String password,
-			@RequestParam(required=false) String oldPassword,
 			@RequestParam(required=false) String fbLink,
 			@RequestParam(required=false) String igLink,
 			@RequestParam(required=false) String vkLink
@@ -80,9 +79,6 @@ public class UserController {
 			user.setLogin(login);
 		}
 		if(password != null && password.length() > 0) {
-			if(!passwordEncoder.matches(oldPassword, user.getPassword())) {
-				throw new IllegalArgumentException("Неверный старый пароль");
-			}
 			user.setPassword(passwordEncoder.encode(password));
 		}
 		userRepository.save(user);
