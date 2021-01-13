@@ -108,7 +108,7 @@ public class ViewController {
 					.title("")
 					.path("/manage")
 					.and()
-				.title("Управление")
+				.title("Управлiння")
 				.data("pageName", "manage")
 				.build();
 	}
@@ -232,7 +232,8 @@ public class ViewController {
 						"isAdmin", user == null ? null : WebSecurityConfig.ADMIN_LOGIN
 								.equals(user.getLogin()))
 					.and()
-				.data("excludeHeader", true, "pageName", user != null ? "userinfo" : "main")				
+				.data("excludeHeader", true, "pageName", user != null ? "userinfo" : "main",			
+				"includePreloader", true)
 				.title("")
 				.build();
 	}

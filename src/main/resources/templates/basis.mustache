@@ -5,7 +5,9 @@
 	</head>
 	<body class="preload">
 		<div class="body">
-			{{>misc/elements/preloader}}
+			{{#includePreloader}}
+				{{>misc/elements/preloader}}
+			{{/includePreloader}}
 			<div class="page {{#pageName}}{{pageName}}{{/pageName}}">
 				{{^excludeHeader}}
 					{{>misc/elements/header}}
