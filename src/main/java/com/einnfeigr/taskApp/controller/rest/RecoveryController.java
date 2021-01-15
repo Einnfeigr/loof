@@ -1,5 +1,6 @@
 package com.einnfeigr.taskApp.controller.rest;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
@@ -22,9 +23,6 @@ import com.einnfeigr.taskApp.repository.RecoveryCodeRepository;
 public class RecoveryController {
 	
 	private static final Logger log = LoggerFactory.getLogger(RecoveryController.class);
-	
-	@Autowired
-	private BCryptPasswordEncoder encoder;
 	
 	@Autowired
 	private RecoveryCodeRepository repository;
@@ -61,13 +59,13 @@ public class RecoveryController {
 	
 	@PostMapping("/api/recovery/consume")
 	public void consume(@RequestParam String code, 
-			@RequestParam String password) throws UserNotFoundException, AccessException {
+			@RequestParam String password) throws AccessException, IOException {
 		RecoveryCode recoveryCode = get(code);
 		if(recoveryCode == null) {
 			throw new AccessException("Code cannot be found");
 		}
 		User user = recoveryCode.getUser();
-		user.setPassword(encoder.encode(password));
+		userController.updateUser(null, null, null, password, null, null, null);
 		user.setRecoveryCode(null);
 		userController.save(user);
 		log.info("User password has been changed");

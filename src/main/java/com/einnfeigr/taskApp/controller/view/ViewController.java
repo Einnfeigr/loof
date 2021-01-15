@@ -459,7 +459,7 @@ public class ViewController {
 	
 	@PostMapping("/recovery/{code}")
 	public ModelAndView recoverByCode(@PathVariable String code, @RequestParam String password) 
-			throws UserNotFoundException, AccessException {
+			throws AccessException, IOException {
 		recoveryController.consume(code, password);
 		log.info("Recovery code \'"+code+"\' has been consumed");
 		return new ModelAndView("redirect:/login");
